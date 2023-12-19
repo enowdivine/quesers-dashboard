@@ -1,0 +1,46 @@
+.textColor {
+  color: #398b18;
+}
+
+.loginBtn {
+  background-color: #398b18;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.customInputDiv {
+  background-color: #ccc;
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.customInput {
+  border: none;
+  outline: none;
+  padding: 0 10px;
+  width: 90%;
+}
+
+.customInputIcon {
+  background-color: #ccc;
+  width: 10%;
+  padding: 10px;
+  border-right: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.customInputIconRight {
+  background-color: #ccc;
+  width: 10%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
