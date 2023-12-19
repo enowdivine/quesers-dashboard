@@ -4,7 +4,7 @@ import "../styles/AuthStyles.css";
 
 const AuthLayout = () => {
   return (
-    <div className="wrapper">
+    <div className="authWrapper">
       <div className="loginForm">
         <Login />
       </div>

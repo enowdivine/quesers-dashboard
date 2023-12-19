@@ -1,5 +1,40 @@
-.textColor {
+.textPrimary {
   color: #398b18;
+}
+
+.textSecondary {
+  color: #f4f124;
+}
+
+.wrapper {
+  display: flex;
+}
+
+.maincontent {
+  width: 80%;
+}
+
+.topnav {
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+}
+
+.contentsection {
+  padding: 15px;
+}
+
+.leftsidebar {
+  width: 20%;
+  height: 100vh;
+  padding: 15px;
+  border-right: 1px solid #ccc;
+}
+
+.rightsidebar {
+  width: 20%;
+  height: 100vh;
+  padding: 15px;
+  border-left: 1px solid #ccc;
 }
 
 .loginBtn {
