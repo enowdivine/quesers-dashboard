@@ -1,8 +1,7 @@
 import React from "react";
-import Login from "../components/Login";
-import "../styles/AuthStyles.css";
+import Login from "../../components/Login";
 
-const AuthLayout = () => {
+const LoginPage = () => {
   return (
     <div className="authWrapper">
       <div className="loginForm">
@@ -12,4 +11,4 @@ const AuthLayout = () => {
   );
 };
 
-export default AuthLayout;
+export default LoginPage;

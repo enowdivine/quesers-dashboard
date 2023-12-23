@@ -1,15 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
+import "../src/styles/GlobalStyles.css";
+import "../src/styles/AuthStyles.css";
+import "../src/styles/AdminStyles.css";
+import "../src/styles/VendorStyles.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import AuthContext from "./context/AuthContext";
+import RouteContext from "./context/NavigationContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AuthContext>
-      <App />
+      <RouteContext>
+        <App />
+      </RouteContext>
     </AuthContext>
   </React.StrictMode>
 );

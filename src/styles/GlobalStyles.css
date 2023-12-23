@@ -8,6 +8,7 @@
 
 .wrapper {
   display: flex;
+  margin: auto;
 }
 
 .maincontent {
@@ -26,14 +27,14 @@
 .leftsidebar {
   width: 20%;
   height: 100vh;
-  padding: 15px;
+  padding: 25px;
   border-right: 1px solid #ccc;
 }
 
 .rightsidebar {
   width: 20%;
   height: 100vh;
-  padding: 15px;
+  padding: 25px;
   border-left: 1px solid #ccc;
 }
 

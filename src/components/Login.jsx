@@ -4,11 +4,19 @@ import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { setRole, setAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    setAuthenticated(true);
+    setRole("vendor");
+    navigate("/dashboard", { replace: true });
+  };
 
   return (
     <div>
@@ -36,7 +44,6 @@ const Login = () => {
                   type="email"
                   placeholder="Email"
                   autocomplete="email"
-                  required
                   className="customInput"
                 />
               </div>
@@ -53,7 +60,6 @@ const Login = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   autocomplete="current-password"
-                  required
                   className="customInput"
                 />
                 <div
@@ -76,7 +82,6 @@ const Login = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="Confirm Password"
                   autocomplete="current-password"
-                  required
                   className="customInput"
                 />
                 <div
@@ -93,13 +98,7 @@ const Login = () => {
               </a>
             </div>
             <div>
-              <button
-                className="loginBtn"
-                onClick={() => {
-                  setAuthenticated(true);
-                  setRole("vendor");
-                }}
-              >
+              <button className="loginBtn" onClick={handleLogin}>
                 Login
               </button>
             </div>

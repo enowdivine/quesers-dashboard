@@ -1,12 +1,9 @@
 import React from "react";
-import "../styles/GlobalStyles.css";
-import "../styles/VendorStyles.css";
 import LeftSidebar from "../components/vendor/LeftSidebar";
 import RightSidebar from "../components/vendor/RightSidebar";
 import TopNav from "../components/vendor/TopNav";
-import MainContent from "../components/vendor/MainContent";
 
-const VendorLayout = () => {
+const VendorLayout = ({ children }) => {
   return (
     <div className="wrapper">
       <div className="leftsidebar">
@@ -16,9 +13,7 @@ const VendorLayout = () => {
         <div className="topnav">
           <TopNav />
         </div>
-        <div className="contentsection">
-          <MainContent />
-        </div>
+        <div className="contentsection">{children}</div>
       </div>
       <div className="rightsidebar">
         <RightSidebar />

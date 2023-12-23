@@ -1,0 +1,94 @@
+/* Left Sidebar styles */
+.brand {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.brand img {
+  width: 60px;
+  border-radius: 50%;
+  border: 1px solid #398b18;
+}
+.brand p {
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.leftsidebarNavTitle {
+  color: #ccc;
+}
+
+.leftsidebarNavItems {
+  display: block;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.selectedNavItem {
+  color: #398b18;
+  font-weight: bold;
+  background-color: whitesmoke;
+}
+
+.leftsidebarNavItems:hover {
+  background-color: whitesmoke;
+}
+
+/* Top navigation styles */
+.vendorTopNav {
+  display: flex;
+  justify-content: space-between;
+}
+.vendorTopNav .breadcrumb {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.vendorTopNav .logo {
+  color: #398b18;
+  font-weight: bold;
+}
+.vendorTopNav .options {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.vendorTopNav .options .searchInput {
+  background-color: whitesmoke;
+  padding: 5px;
+  border-radius: 5px;
+  outline: none;
+  font-size: 15px;
+}
+
+/* Main content styles */
+.vendorMainContent .heading {
+  display: flex;
+  justify-content: space-between;
+}
+.vendorMainContent .statistics {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.vendorMainContent .docs {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  height: 63vh;
+  overflow-y: scroll;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.vendorMainContent .docs::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.vendorMainContent .docs {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
