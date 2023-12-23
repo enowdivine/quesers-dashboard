@@ -1,12 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { MdOutlineSpaceDashboard, MdOutlineWbSunny } from "react-icons/md";
 import { FaRegStar } from "react-icons/fa";
 import { FiBell } from "react-icons/fi";
-import { RouteContext } from "../../context/NavigationContext";
 
 const TopNav = () => {
-  const { selectedRoute } = useContext(RouteContext);
-
   return (
     <div className="vendorTopNav">
       <div className="breadcrumb">
@@ -19,7 +16,7 @@ const TopNav = () => {
         <div>
           <span className="logo mr-1">OUTSHINE</span>{" "}
           <span className="mr-5">Dashboard</span> /
-          <span className="ml-5">{selectedRoute}</span>
+          <span className="ml-5">Default</span>
         </div>
       </div>
       <div className="options">

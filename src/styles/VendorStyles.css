@@ -78,7 +78,7 @@
   display: flex;
   flex-wrap: wrap;
   margin-top: 20px;
-  height: 63vh;
+  height: 60vh;
   overflow-y: scroll;
 }
 
@@ -91,4 +91,29 @@
 .vendorMainContent .docs {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+/*  */
+
+.screenshots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 20px 20px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  height: 220px;
+  width: 80%;
+  background-color: #b1dbaf;
+}
+
+.uploadFormInput {
+  width: 80%;
+  padding: 15px;
+  border-radius: 5px;
+  outline: none;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  background-color: #f0efef;
+  resize: none;
 }

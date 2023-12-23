@@ -12,12 +12,8 @@ const navItems = [
     link: "/create",
   },
   {
-    title: "Cash-out",
+    title: "Cashout Requests",
     link: "/cash-out",
-  },
-  {
-    title: "Contact",
-    link: "/contact",
   },
   {
     title: "Logout",
@@ -38,6 +34,7 @@ const LeftSidebar = () => {
       <ul>
         {navItems.map((item, index) => (
           <Link
+            onClick={() => setSelected(item)}
             to={item.link}
             key={index}
             className={
@@ -45,10 +42,6 @@ const LeftSidebar = () => {
                 ? "leftsidebarNavItems selectedNavItem"
                 : "leftsidebarNavItems"
             }
-            onClick={() => {
-              setSelected(item);
-              setSelectedRoute(item.title);
-            }}
           >
             {item.title}
           </Link>

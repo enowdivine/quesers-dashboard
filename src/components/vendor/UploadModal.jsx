@@ -1,10 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { FaLaptopFile } from "react-icons/fa6";
 import { useDropzone } from "react-dropzone";
-import { RouteContext } from "../../context/NavigationContext";
 
-const UploadModal = () => {
-  const { uploadModal, setUploadModal, setDoc } = useContext(RouteContext);
+const UploadModal = ({ setShowModal }) => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -12,7 +10,7 @@ const UploadModal = () => {
     },
   });
   const setDocument = () => {
-    setDoc(uploadedFiles[0]);
+    console(uploadedFiles[0]);
   };
 
   return (
@@ -76,7 +74,7 @@ const UploadModal = () => {
               <button
                 type="button"
                 class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                onClick={() => setUploadModal(false)}
+                onClick={() => setShowModal(false)}
               >
                 Close
               </button>

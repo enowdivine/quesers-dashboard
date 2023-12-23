@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import VendorLayout from "../../layouts/VendorLayout";
 import UploadForm from "../../components/vendor/UploadForm";
 
