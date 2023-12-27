@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import "../src/styles/GlobalStyles.css";
 import "../src/styles/AuthStyles.css";
-import "../src/styles/AdminStyles.css";
 import "../src/styles/VendorStyles.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";

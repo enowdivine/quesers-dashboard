@@ -14,7 +14,7 @@ const Login = () => {
 
   const handleLogin = () => {
     setAuthenticated(true);
-    setRole("vendor");
+    setRole("admin");
     navigate("/dashboard", { replace: true });
   };
 
@@ -93,7 +93,7 @@ const Login = () => {
               </div>
             </div>
             <div className="text-sm">
-              <a href="#" className="textPrimary">
+              <a href="/forgot-password" className="textPrimary">
                 Forgot password?
               </a>
             </div>

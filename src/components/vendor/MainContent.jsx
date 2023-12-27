@@ -1,6 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import Cards from "../Cards";
 import Document from "../Document";
+import { AuthContext } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const stats = [
   {
@@ -269,6 +271,8 @@ const docs = [
 ];
 
 const MainContent = () => {
+  const { role } = useContext(AuthContext);
+
   return (
     <div className="vendorMainContent">
       <div className="heading">
@@ -289,28 +293,43 @@ const MainContent = () => {
             title={item.title}
             value={item.value}
             desc={item.desc}
-            color={index % 2 == 1 ? "#dee3e3" : "#dcecf2"}
+            color={index % 2 === 1 ? "#dee3e3" : "#dcecf2"}
             width={"25%"}
             margin={15}
           />
         ))}
       </div>
       <div className="heading">
-        <h4 style={{ fontWeight: "bold", marginTop: 30 }}>Uploads</h4>
+        <h4 style={{ fontWeight: "bold", marginTop: 30 }}>
+          {role === "admin" ? (
+            <select
+              style={{ outline: "none", padding: "5px 10px", borderRadius: 5 }}
+            >
+              <option>Filter</option>
+              <option>Pending</option>
+              <option>Approved</option>
+              <option>Rejected</option>
+            </select>
+          ) : (
+            "Uploads"
+          )}
+        </h4>
       </div>
       <div className="docs">
         {docs.map((item, index) => (
-          <Document
-            key={index}
-            title={item.title}
-            color={
-              item.status === "pending"
-                ? "yellow"
-                : item.status === "rejected"
-                  ? "red"
-                  : "green"
-            }
-          />
+          <Link style={{ width: "20%" }} to={`/doc-details/${index}`}>
+            <Document
+              key={index}
+              title={item.title}
+              color={
+                item.status === "pending"
+                  ? "yellow"
+                  : item.status === "rejected"
+                    ? "red"
+                    : "green"
+              }
+            />
+          </Link>
         ))}
       </div>
     </div>

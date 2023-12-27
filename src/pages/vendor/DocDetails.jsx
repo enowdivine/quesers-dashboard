@@ -1,13 +1,13 @@
 import React from "react";
 import VendorLayout from "../../layouts/VendorLayout";
-import MainContent from "../../components/vendor/MainContent";
+import UploadForm from "../../components/vendor/UploadForm";
 
-const Home = () => {
+const DocDetails = () => {
   return (
     <VendorLayout>
-      <MainContent />
+      <UploadForm />
     </VendorLayout>
   );
 };
 
-export default Home;
+export default DocDetails;

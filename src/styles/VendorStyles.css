@@ -37,6 +37,17 @@
   background-color: whitesmoke;
 }
 
+.rightsidebarNavItems {
+  display: block;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.rightsidebarNavItems:hover {
+  background-color: whitesmoke;
+}
+
 /* Top navigation styles */
 .vendorTopNav {
   display: flex;
@@ -78,7 +89,7 @@
   display: flex;
   flex-wrap: wrap;
   margin-top: 20px;
-  height: 60vh;
+  height: 62vh;
   overflow-y: scroll;
 }
 
@@ -116,4 +127,36 @@
   border: 1px solid #ccc;
   background-color: #f0efef;
   resize: none;
+}
+
+/* CASHOUT REQUEST TALE */
+.CRTable {
+  max-height: 90vh;
+  overflow-y: scroll;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.CRTable::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.CRTable {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.CRTable table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.CRTable th,
+.CRTable td {
+  text-align: left;
+  padding: 8px;
+}
+
+.CRTable tr:nth-child(even) {
+  background-color: whitesmoke;
 }

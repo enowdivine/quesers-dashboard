@@ -3,7 +3,7 @@ import { GrDocumentText } from "react-icons/gr";
 
 const Document = ({ title, color }) => {
   return (
-    <div style={{ width: "20%" }}>
+    <div style={{ width: "100%" }}>
       <div
         style={{
           border: "1px solid black",

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
-import { RouteContext } from "../../context/NavigationContext";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { GrDocumentText } from "react-icons/gr";
 
 const navItems = [
   {
@@ -13,17 +14,34 @@ const navItems = [
   },
   {
     title: "Cashout Requests",
-    link: "/cash-out",
+    link: "/requests",
+  },
+];
+
+const docsItems = [
+  {
+    title: "Physics for Engineering",
+    link: "/doc-details/1",
   },
   {
-    title: "Logout",
-    link: "/logout",
+    title: "Mathematics 2",
+    link: "/doc-details/1",
+  },
+  {
+    title: "Physics for Engineering",
+    link: "/doc-details/1",
   },
 ];
 
 const LeftSidebar = () => {
   const [selected, setSelected] = useState({ title: "Home" });
-  const { setSelectedRoute } = useContext(RouteContext);
+  const { setAuthenticated, role } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    localStorage.removeItem("quesers-admin");
+    setAuthenticated(false);
+  };
+
   return (
     <div>
       <div className="brand">
@@ -31,22 +49,48 @@ const LeftSidebar = () => {
         <p>OutShine</p>
       </div>
       <h4 className="leftsidebarNavTitle">Actions</h4>
-      <ul>
-        {navItems.map((item, index) => (
-          <Link
-            onClick={() => setSelected(item)}
-            to={item.link}
-            key={index}
-            className={
-              selected && selected.title === item.title
-                ? "leftsidebarNavItems selectedNavItem"
-                : "leftsidebarNavItems"
-            }
-          >
-            {item.title}
+      {role === "vendor" && (
+        <ul>
+          {navItems.map((item, index) => (
+            <Link
+              key={index}
+              onClick={() => setSelected(item)}
+              className={
+                selected && selected.title === item.title
+                  ? "leftsidebarNavItems selectedNavItem"
+                  : "leftsidebarNavItems"
+              }
+              to={item.link}
+            >
+              {item.title}
+            </Link>
+          ))}
+          <Link onClick={handleLogout} className={"leftsidebarNavItems"}>
+            Logout
           </Link>
-        ))}
-      </ul>
+        </ul>
+      )}
+      {role === "admin" && (
+        <ul>
+          {docsItems.map((item, index) => (
+            <Link
+              key={index}
+              onClick={() => setSelected(item)}
+              className={
+                selected && selected.title === item.title
+                  ? "leftsidebarNavItems selectedNavItem"
+                  : "leftsidebarNavItems"
+              }
+              to={item.link}
+            >
+              <span style={{ display: "flex" }}>
+                <GrDocumentText size={25} color={"green"} className="mr-1" />
+                {item.title}
+              </span>
+            </Link>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

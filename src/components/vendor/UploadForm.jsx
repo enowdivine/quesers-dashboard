@@ -2,7 +2,19 @@ import React, { useState } from "react";
 import { GrDocumentText } from "react-icons/gr";
 import { FaPlus } from "react-icons/fa";
 import { useDropzone } from "react-dropzone";
-import { RouteContext } from "../../context/NavigationContext";
+
+const UploadBtnStyles = {
+  fontWeight: "bold",
+  color: "white",
+  background: "#398b18",
+  width: "80%",
+  borderRadius: 5,
+  padding: 10,
+  marginTop: 20,
+  marginBottom: 20,
+};
+
+// const BTNStyles = {};
 
 const UploadForm = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -231,6 +243,32 @@ const UploadForm = () => {
             className="uploadFormInput"
           />
         </div>
+        <div>
+          <button
+            style={{
+              fontWeight: "bold",
+              color: "white",
+              background: "#398b18",
+              padding: "10px 35px",
+              borderRadius: 5,
+            }}
+          >
+            APPROVE
+          </button>
+          <button
+            style={{
+              fontWeight: "bold",
+              color: "white",
+              background: "red",
+              padding: "10px 35px",
+              borderRadius: 5,
+              marginLeft: 20,
+            }}
+          >
+            REJECT
+          </button>
+        </div>
+        <button style={UploadBtnStyles}>UPLOAD</button>
       </div>
     </div>
   );

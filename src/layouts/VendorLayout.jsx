@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import LeftSidebar from "../components/vendor/LeftSidebar";
 import RightSidebar from "../components/vendor/RightSidebar";
 import TopNav from "../components/vendor/TopNav";
 
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 const VendorLayout = ({ children }) => {
+  const { authenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!authenticated) {
+      navigate("/");
+      return;
+    }
+  }, [authenticated, navigate]);
+
   return (
     <div className="wrapper">
       <div className="leftsidebar">
