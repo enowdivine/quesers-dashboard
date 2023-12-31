@@ -317,7 +317,11 @@ const MainContent = () => {
       </div>
       <div className="docs">
         {docs.map((item, index) => (
-          <Link style={{ width: "20%" }} to={`/doc-details/${index}`}>
+          <Link
+            style={{ width: "20%" }}
+            to={`/doc-details/${index}`}
+            key={index}
+          >
             <Document
               key={index}
               title={item.title}

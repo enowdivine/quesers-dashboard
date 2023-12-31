@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
-// import { useSelector } from "react-redux";
-import { isExpired, decodeToken } from "react-jwt";
+import { useSelector } from "react-redux";
+import { decodeToken } from "react-jwt";
 
 export const AuthContext = createContext();
 
@@ -9,19 +9,23 @@ export default ({ children }) => {
   const [token, setToken] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
 
+  const stateUser = useSelector((state) => state.auth.user);
   const userToken = localStorage.getItem("quesers-admin");
-
   useEffect(() => {
-    if (userToken) {
-      const decodedToken = decodeToken(userToken);
-      console.log(decodedToken);
-      const isMyTokenExpired = isExpired(userToken);
+    if (userToken || stateUser) {
+      const decodedToken = decodeToken(userToken || stateUser);
+      setRole(decodedToken?.role);
+      setToken(userToken);
       setAuthenticated(true);
-      if (!isMyTokenExpired) {
-        console.log(isMyTokenExpired);
-      }
+      // const isMyTokenExpired = isExpired(userToken);
+      // console.log("is expired", isMyTokenExpired);
+      // if (!isMyTokenExpired) {
+      //   setRole(decodedToken.role);
+      //   setToken(userToken);
+      //   setAuthenticated(true);
+      // }
     }
-  }, [userToken]);
+  }, [userToken, stateUser]);
 
   return (
     <AuthContext.Provider

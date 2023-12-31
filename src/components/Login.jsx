@@ -1,21 +1,53 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../styles/GlobalStyles.css";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { userLogin } from "../helpers/redux/auth";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
-  // const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { setRole, setAuthenticated } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const { authenticated } = useContext(AuthContext);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleLogin = () => {
-    setAuthenticated(true);
-    setRole("admin");
-    navigate("/dashboard", { replace: true });
+  useEffect(() => {
+    if (authenticated) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [authenticated, navigate]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if ((email, password, confirmPassword)) {
+      if (password !== confirmPassword) {
+        toast.error("passwords do not match");
+        return;
+      }
+      const data = {
+        email,
+        password,
+      };
+      const response = await userLogin(data, dispatch, setLoading);
+      if (response.status === "error") {
+        toast.error(response.res.payload);
+        return;
+      } else {
+        toast.success(response.message.payload.message);
+        navigate("/dashboard", { replace: true });
+        return;
+      }
+    } else {
+      toast.error("all fields are requied");
+    }
   };
 
   return (
@@ -45,6 +77,8 @@ const Login = () => {
                   placeholder="Email"
                   autocomplete="email"
                   className="customInput"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
@@ -61,6 +95,8 @@ const Login = () => {
                   placeholder="Password"
                   autocomplete="current-password"
                   className="customInput"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <div
                   className="customInputIconRight"
@@ -83,6 +119,8 @@ const Login = () => {
                   placeholder="Confirm Password"
                   autocomplete="current-password"
                   className="customInput"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 <div
                   className="customInputIconRight"
@@ -99,7 +137,7 @@ const Login = () => {
             </div>
             <div>
               <button className="loginBtn" onClick={handleLogin}>
-                Login
+                {loading ? "Loading..." : "Login"}
               </button>
             </div>
           </form>

@@ -2,6 +2,8 @@ import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { GrDocumentText } from "react-icons/gr";
+import { userLogout } from "../../helpers/redux/auth";
+import { useDispatch } from "react-redux";
 
 const navItems = [
   {
@@ -37,8 +39,10 @@ const LeftSidebar = () => {
   const [selected, setSelected] = useState({ title: "Home" });
   const { setAuthenticated, role } = useContext(AuthContext);
 
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
-    localStorage.removeItem("quesers-admin");
+    userLogout(dispatch);
     setAuthenticated(false);
   };
 

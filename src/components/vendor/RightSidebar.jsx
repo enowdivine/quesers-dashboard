@@ -2,6 +2,8 @@ import React, { useState, useContext } from "react";
 import Cards from "../Cards";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import { userLogout } from "../../helpers/redux/auth";
+import { useDispatch } from "react-redux";
 
 const FormStyle = {
   width: "100%",
@@ -32,9 +34,10 @@ const RightSidebar = () => {
   const [selected, setSelected] = useState({ title: "Home" });
   const { setAuthenticated, role } = useContext(AuthContext);
   console.log(selected);
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
-    localStorage.removeItem("quesers-admin");
+    userLogout(dispatch);
     setAuthenticated(false);
   };
 
