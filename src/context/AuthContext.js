@@ -6,6 +6,7 @@ export const AuthContext = createContext();
 
 export default ({ children }) => {
   const [role, setRole] = useState("");
+  const [userId, setUserId] = useState("");
   const [token, setToken] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
 
@@ -15,15 +16,9 @@ export default ({ children }) => {
     if (userToken || stateUser) {
       const decodedToken = decodeToken(userToken || stateUser);
       setRole(decodedToken?.role);
+      setUserId(decodedToken?.id);
       setToken(userToken);
       setAuthenticated(true);
-      // const isMyTokenExpired = isExpired(userToken);
-      // console.log("is expired", isMyTokenExpired);
-      // if (!isMyTokenExpired) {
-      //   setRole(decodedToken.role);
-      //   setToken(userToken);
-      //   setAuthenticated(true);
-      // }
     }
   }, [userToken, stateUser]);
 
@@ -32,6 +27,8 @@ export default ({ children }) => {
       value={{
         role,
         setRole,
+        userId,
+        setUserId,
         token,
         setToken,
         authenticated,

@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Cards from "../Cards";
 import Document from "../Document";
 import { AuthContext } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
+import { getVendorDocs } from "../../helpers/redux/resources";
+import { useDispatch, useSelector } from "react-redux";
 
 const stats = [
   {
@@ -27,251 +29,25 @@ const stats = [
   },
 ];
 
-const docs = [
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "pending",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "rejected",
-  },
-  {
-    title: "Ordinary Level Physics for beginners",
-    status: "approved",
-  },
-];
-
 const MainContent = () => {
-  const { role } = useContext(AuthContext);
+  const { role, userId } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const [docs, setDocs] = useState([]);
+  const allDocs = useSelector((state) => state.resource.resources);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getAllDocs = async () => {
+      await getVendorDocs(userId, dispatch, setLoading);
+    };
+
+    getAllDocs();
+  }, [userId, dispatch]);
+
+  useEffect(() => {
+    setDocs(allDocs);
+  }, [allDocs]);
 
   return (
     <div className="vendorMainContent">
@@ -316,25 +92,36 @@ const MainContent = () => {
         </h4>
       </div>
       <div className="docs">
-        {docs.map((item, index) => (
-          <Link
-            style={{ width: "20%" }}
-            to={`/doc-details/${index}`}
-            key={index}
+        {loading && (
+          <div
+            style={{
+              width: "100%",
+              textAlign: "center",
+            }}
           >
-            <Document
+            Loading...
+          </div>
+        )}
+        {docs.length > 0 &&
+          docs.map((item, index) => (
+            <Link
+              style={{ width: "20%" }}
+              to={`/doc-details/${item._id}`}
               key={index}
-              title={item.title}
-              color={
-                item.status === "pending"
-                  ? "yellow"
-                  : item.status === "rejected"
-                    ? "red"
-                    : "green"
-              }
-            />
-          </Link>
-        ))}
+            >
+              <Document
+                key={index}
+                title={item.title}
+                color={
+                  item.status === "pending"
+                    ? "yellow"
+                    : item.status === "rejected"
+                      ? "red"
+                      : "green"
+                }
+              />
+            </Link>
+          ))}
       </div>
     </div>
   );

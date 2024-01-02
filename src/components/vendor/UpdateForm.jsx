@@ -1,12 +1,12 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { GrDocumentText } from "react-icons/gr";
 import { FaPlus } from "react-icons/fa";
 import { useDropzone } from "react-dropzone";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { AuthContext } from "../../context/AuthContext";
 import { uploadDoc } from "../../helpers/redux/resources";
 import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const UploadBtnStyles = {
   fontWeight: "bold",
@@ -22,19 +22,12 @@ const UploadBtnStyles = {
 const UploadForm = () => {
   const { role, userId } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const allDocs = useSelector((state) => state.resource.resources);
 
-  const [uploadedDoc, setUploadedDoc] = useState(null);
-  const [screenshotsOne, setSecreenshotOne] = useState(null);
-  const [screenshotsTwo, setSecreenshotTwo] = useState(null);
-  const [screenshotsThree, setSecreenshotThree] = useState(null);
-  const [screenshotsFour, setSecreenshotFour] = useState(null);
-
-  // const [docPreview, setDocPreview] = useState(null);
-  const [preview1, setPreview1] = useState(null);
-  const [preview2, setPreview2] = useState(null);
-  const [preview3, setPreview3] = useState(null);
-  const [preview4, setPreview4] = useState(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [screenshotsOne, setSecreenshotOne] = useState([]);
+  const [screenshotsTwo, setSecreenshotTwo] = useState([]);
+  const [screenshotsThree, setSecreenshotThree] = useState([]);
+  const [screenshotsFour, setSecreenshotFour] = useState([]);
 
   const [resourceType, setResourceType] = useState("");
   const [faculty, setFaculty] = useState("");
@@ -49,23 +42,17 @@ const UploadForm = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { id } = useParams();
 
   const { getRootProps: getFileDoc, getInputProps: getFileInput } = useDropzone(
     {
       onDrop: (acceptedFiles) => {
-        setUploadedDoc(acceptedFiles[0]);
+        setUploadedFiles(acceptedFiles);
       },
     }
   );
   const { getRootProps: getShotOne, getInputProps: getInputOne } = useDropzone({
     onDrop: (acceptedFiles) => {
-      setSecreenshotOne(acceptedFiles[0]);
-
-      const objectUrl = URL.createObjectURL(acceptedFiles[0]);
-      setPreview1(objectUrl);
-      // free memory when ever this component is unmounted
-      return () => URL.revokeObjectURL(objectUrl);
+      setSecreenshotOne(acceptedFiles);
     },
     accept: {
       "image/jpeg": [],
@@ -74,12 +61,7 @@ const UploadForm = () => {
   });
   const { getRootProps: getShotTwo, getInputProps: getInputTwo } = useDropzone({
     onDrop: (acceptedFiles) => {
-      setSecreenshotTwo(acceptedFiles[0]);
-
-      const objectUrl = URL.createObjectURL(acceptedFiles[0]);
-      setPreview2(objectUrl);
-      // free memory when ever this component is unmounted
-      return () => URL.revokeObjectURL(objectUrl);
+      setSecreenshotTwo(acceptedFiles);
     },
     accept: {
       "image/jpeg": [],
@@ -89,12 +71,7 @@ const UploadForm = () => {
   const { getRootProps: getShotThree, getInputProps: getInputThree } =
     useDropzone({
       onDrop: (acceptedFiles) => {
-        setSecreenshotThree(acceptedFiles[0]);
-
-        const objectUrl = URL.createObjectURL(acceptedFiles[0]);
-        setPreview3(objectUrl);
-        // free memory when ever this component is unmounted
-        return () => URL.revokeObjectURL(objectUrl);
+        setSecreenshotThree(acceptedFiles);
       },
       accept: {
         "image/jpeg": [],
@@ -104,12 +81,7 @@ const UploadForm = () => {
   const { getRootProps: getShotFour, getInputProps: getInputFour } =
     useDropzone({
       onDrop: (acceptedFiles) => {
-        setSecreenshotFour(acceptedFiles[0]);
-
-        const objectUrl = URL.createObjectURL(acceptedFiles[0]);
-        setPreview4(objectUrl);
-        // free memory when ever this component is unmounted
-        return () => URL.revokeObjectURL(objectUrl);
+        setSecreenshotFour(acceptedFiles);
       },
       accept: {
         "image/jpeg": [],
@@ -120,7 +92,7 @@ const UploadForm = () => {
   const handleUpload = async (e) => {
     e.preventDefault();
     if (
-      uploadedDoc[0] &&
+      uploadedFiles[0] &&
       screenshotsOne[0] &&
       screenshotsTwo[0] &&
       screenshotsThree[0] &&
@@ -138,7 +110,7 @@ const UploadForm = () => {
       userId
     ) {
       const data = new FormData();
-      data.append("resourceDoc", uploadedDoc[0]);
+      data.append("resourceDoc", uploadedFiles[0]);
       data.append("screenshotOne", screenshotsOne[0]);
       data.append("screenshotTwo", screenshotsTwo[0]);
       data.append("screenshotThree", screenshotsThree[0]);
@@ -168,33 +140,6 @@ const UploadForm = () => {
       toast.error("all fields are requied");
     }
   };
-
-  useEffect(() => {
-    const getDocById = () => {
-      if (allDocs.length > 0) {
-        const doc = allDocs.filter((doc) => doc._id === id)[0];
-        setResourceType(doc.resourceType);
-        setFaculty(doc.faculty);
-        setDepartment(doc.department);
-        setLevel(doc.level);
-        setSemester(doc.semester);
-        setTitle(doc.title);
-        setFeatures(doc.features);
-        setPrice(doc.price);
-        setLanguage(doc.language);
-        setDescription(doc.desc);
-        setPreview1(doc?.screenshots[0].doc);
-        setPreview2(doc?.screenshots[1].doc);
-        setPreview3(doc?.screenshots[2].doc);
-        setPreview4(doc?.screenshots[3].doc);
-        return;
-      }
-    };
-
-    if (id !== undefined && id !== null) {
-      getDocById();
-    }
-  }, [id, allDocs]);
 
   return (
     <div
@@ -252,7 +197,11 @@ const UploadForm = () => {
                     <div className="text-center font-bold mt-2">
                       DRAG & DROP OR CLICK TO UPLOAD
                     </div>
-                    <div>{uploadedDoc?.name}</div>
+                    <ul>
+                      {uploadedFiles.map((file) => (
+                        <li key={file.name}>{file.name}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -278,20 +227,12 @@ const UploadForm = () => {
                         }}
                       >
                         <FaPlus size={50} color="#398b18" />
-                        {preview1 && (
-                          <div style={{ minWidth: "100%", minHeight: "100%" }}>
-                            <img
-                              src={preview1}
-                              alt={"preview"}
-                              style={{
-                                minWidth: "100%",
-                                minHeight: "220px",
-                                borderRadius: "10px",
-                              }}
-                            />
-                          </div>
-                        )}
                       </div>
+                      <ul>
+                        {screenshotsOne.map((file) => (
+                          <li key={file.name}>{file.name}</li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                   <div {...getShotTwo()} className="screenshots">
@@ -305,20 +246,12 @@ const UploadForm = () => {
                         }}
                       >
                         <FaPlus size={50} color="#398b18" />
-                        {preview2 && (
-                          <div style={{ minWidth: "100%", minHeight: "100%" }}>
-                            <img
-                              src={preview2}
-                              alt={"preview"}
-                              style={{
-                                minWidth: "100%",
-                                minHeight: "220px",
-                                borderRadius: "10px",
-                              }}
-                            />
-                          </div>
-                        )}
                       </div>
+                      <ul>
+                        {screenshotsTwo.map((file) => (
+                          <li key={file.name}>{file.name}</li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -334,20 +267,12 @@ const UploadForm = () => {
                         }}
                       >
                         <FaPlus size={50} color="#398b18" />
-                        {preview3 && (
-                          <div style={{ minWidth: "100%", minHeight: "100%" }}>
-                            <img
-                              src={preview3}
-                              alt={"preview"}
-                              style={{
-                                minWidth: "100%",
-                                minHeight: "220px",
-                                borderRadius: "10px",
-                              }}
-                            />
-                          </div>
-                        )}
                       </div>
+                      <ul>
+                        {screenshotsThree.map((file) => (
+                          <li key={file.name}>{file.name}</li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                   <div {...getShotFour()} className="screenshots">
@@ -361,20 +286,12 @@ const UploadForm = () => {
                         }}
                       >
                         <FaPlus size={50} color="#398b18" />
-                        {preview4 && (
-                          <div style={{ minWidth: "100%", minHeight: "100%" }}>
-                            <img
-                              src={preview4}
-                              alt={"preview"}
-                              style={{
-                                minWidth: "100%",
-                                minHeight: "220px",
-                                borderRadius: "10px",
-                              }}
-                            />
-                          </div>
-                        )}
                       </div>
+                      <ul>
+                        {screenshotsFour.map((file) => (
+                          <li key={file.name}>{file.name}</li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -389,7 +306,6 @@ const UploadForm = () => {
           <div>
             <select
               className="uploadFormInput"
-              value={resourceType}
               onChange={(e) => setResourceType(e.target.value)}
             >
               <option>Exam/School</option>
@@ -399,7 +315,6 @@ const UploadForm = () => {
             </select>
             <select
               className="uploadFormInput"
-              value={faculty}
               onChange={(e) => setFaculty(e.target.value)}
             >
               <option>Faculty</option>
@@ -408,7 +323,6 @@ const UploadForm = () => {
             </select>
             <select
               className="uploadFormInput"
-              value={department}
               onChange={(e) => setDepartment(e.target.value)}
             >
               <option>Department</option>
@@ -417,7 +331,6 @@ const UploadForm = () => {
             </select>
             <select
               className="uploadFormInput"
-              value={level}
               onChange={(e) => setLevel(e.target.value)}
             >
               <option>Level</option>
@@ -428,7 +341,6 @@ const UploadForm = () => {
             </select>
             <select
               className="uploadFormInput"
-              value={semester}
               onChange={(e) => setSemester(e.target.value)}
             >
               <option>Semester</option>
@@ -437,7 +349,6 @@ const UploadForm = () => {
             </select>
             <select
               className="uploadFormInput"
-              value={language}
               onChange={(e) => setLanguage(e.target.value)}
             >
               <option>Language</option>
@@ -459,14 +370,12 @@ const UploadForm = () => {
               type="number"
               placeholder="Enter Price"
               className="uploadFormInput"
-              value={price}
               onChange={(e) => setPrice(e.target.value)}
             />
             <input
               type="text"
               placeholder="Enter Title"
               className="uploadFormInput"
-              value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
             <textarea
@@ -474,14 +383,12 @@ const UploadForm = () => {
               placeholder="Add Features"
               rows="4"
               cols="50"
-              value={features}
               onChange={(e) => setFeatures(e.target.value)}
             ></textarea>
             <input
               type="text"
               placeholder="Short Description"
               className="uploadFormInput"
-              value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
