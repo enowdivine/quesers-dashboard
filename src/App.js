@@ -1,10 +1,10 @@
 import React from "react";
 import Login from "./pages/auth/Login";
-import Home from "./pages/vendor/Home";
-import Upload from "./pages/vendor/Upload";
-import CashoutRequest from "./pages/vendor/CashoutRequest";
+import Home from "./pages/dashboard/Home";
+import Upload from "./pages/dashboard/Upload";
+import CashoutRequest from "./pages/dashboard/CashoutRequest";
 import PageError from "./pages/PageError";
-import DocDetails from "./pages/vendor/DocDetails";
+import DocDetails from "./pages/dashboard/DocDetails";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";

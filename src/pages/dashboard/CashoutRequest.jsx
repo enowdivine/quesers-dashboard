@@ -1,9 +1,9 @@
 import React from "react";
-import VendorLayout from "../../layouts/VendorLayout";
+import Layout from "../../layouts/Layout";
 
 const CashoutRequest = () => {
   return (
-    <VendorLayout>
+    <Layout>
       <div className="CRTable">
         <table>
           <tr>
@@ -29,7 +29,7 @@ const CashoutRequest = () => {
           ))}
         </table>
       </div>
-    </VendorLayout>
+    </Layout>
   );
 };
 
