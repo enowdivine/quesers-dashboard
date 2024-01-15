@@ -4,7 +4,11 @@ import { FaPlus } from "react-icons/fa";
 import { useDropzone } from "react-dropzone";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthContext } from "../../context/AuthContext";
-import { uploadDoc } from "../../helpers/redux/resources";
+import {
+  uploadDoc,
+  updateDoc,
+  updateDocStatus,
+} from "../../helpers/redux/resources";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -22,6 +26,9 @@ const UploadBtnStyles = {
 const UploadForm = () => {
   const { role, userId } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const [approvedLoading, setApprovedLoading] = useState(false);
+  const [rejectedLoading, setRejectedLoading] = useState(false);
+  const [singleDoc, setSingleDoc] = useState(null);
   const allDocs = useSelector((state) => state.resource.resources);
 
   const [uploadedDoc, setUploadedDoc] = useState(null);
@@ -30,7 +37,7 @@ const UploadForm = () => {
   const [screenshotsThree, setSecreenshotThree] = useState(null);
   const [screenshotsFour, setSecreenshotFour] = useState(null);
 
-  // const [docPreview, setDocPreview] = useState(null);
+  const [docPreview, setDocPreview] = useState(null);
   const [preview1, setPreview1] = useState(null);
   const [preview2, setPreview2] = useState(null);
   const [preview3, setPreview3] = useState(null);
@@ -55,6 +62,11 @@ const UploadForm = () => {
     {
       onDrop: (acceptedFiles) => {
         setUploadedDoc(acceptedFiles[0]);
+
+        const objectUrl = URL.createObjectURL(acceptedFiles[0]);
+        setDocPreview(objectUrl);
+        // free memory when ever this component is unmounted
+        return () => URL.revokeObjectURL(objectUrl);
       },
     }
   );
@@ -120,11 +132,11 @@ const UploadForm = () => {
   const handleUpload = async (e) => {
     e.preventDefault();
     if (
-      uploadedDoc[0] &&
-      screenshotsOne[0] &&
-      screenshotsTwo[0] &&
-      screenshotsThree[0] &&
-      screenshotsFour[0] &&
+      uploadedDoc &&
+      screenshotsOne &&
+      screenshotsTwo &&
+      screenshotsThree &&
+      screenshotsFour &&
       resourceType &&
       faculty &&
       department &&
@@ -138,11 +150,11 @@ const UploadForm = () => {
       userId
     ) {
       const data = new FormData();
-      data.append("resourceDoc", uploadedDoc[0]);
-      data.append("screenshotOne", screenshotsOne[0]);
-      data.append("screenshotTwo", screenshotsTwo[0]);
-      data.append("screenshotThree", screenshotsThree[0]);
-      data.append("screenshotFour", screenshotsFour[0]);
+      data.append("resourceDoc", uploadedDoc);
+      data.append("screenshotOne", screenshotsOne);
+      data.append("screenshotTwo", screenshotsTwo);
+      data.append("screenshotThree", screenshotsThree);
+      data.append("screenshotFour", screenshotsFour);
       data.append("resourceType", resourceType);
       data.append("faculty", faculty);
       data.append("department", department);
@@ -169,25 +181,98 @@ const UploadForm = () => {
     }
   };
 
+  const handleUpdateUpload = async (e) => {
+    e.preventDefault();
+
+    const data = new FormData();
+    data.append("resourceDoc", uploadedDoc);
+    data.append("screenshotOne", screenshotsOne);
+    data.append("screenshotTwo", screenshotsTwo);
+    data.append("screenshotThree", screenshotsThree);
+    data.append("screenshotFour", screenshotsFour);
+    data.append("resourceType", resourceType);
+    data.append("faculty", faculty);
+    data.append("department", department);
+    data.append("level", level);
+    data.append("semester", semester);
+    data.append("title", title);
+    data.append("features", features);
+    data.append("desc", description);
+    data.append("language", language);
+    data.append("price", price);
+    data.append("vendorId", userId);
+
+    const response = await updateDoc(data, dispatch, setLoading);
+    if (response.status === "error") {
+      toast.error(response.res.payload);
+      return;
+    } else {
+      toast.success(response.message.payload.message);
+      return;
+    }
+  };
+
+  const handleUpdateStatus = async (status) => {
+    const data = {
+      docId: id,
+      status,
+    };
+    if (status === "approved") {
+      const response = await updateDocStatus(
+        data,
+        dispatch,
+        setApprovedLoading
+      );
+      if (response.status === "error") {
+        toast.error(response.res.payload);
+        return;
+      } else {
+        toast.success(response.message.payload.message);
+        return;
+      }
+    } else {
+      const response = await updateDocStatus(
+        data,
+        dispatch,
+        setRejectedLoading
+      );
+      if (response.status === "error") {
+        toast.error(response.res.payload);
+        return;
+      } else {
+        toast.success(response.message.payload.message);
+        return;
+      }
+    }
+  };
+
+  const setStatusChange = (value) => {
+    handleUpdateStatus(value);
+  };
+
   useEffect(() => {
     const getDocById = () => {
       if (allDocs.length > 0) {
         const doc = allDocs.filter((doc) => doc._id === id)[0];
-        setResourceType(doc.resourceType);
-        setFaculty(doc.faculty);
-        setDepartment(doc.department);
-        setLevel(doc.level);
-        setSemester(doc.semester);
-        setTitle(doc.title);
-        setFeatures(doc.features);
-        setPrice(doc.price);
-        setLanguage(doc.language);
-        setDescription(doc.desc);
-        setPreview1(doc?.screenshots[0].doc);
-        setPreview2(doc?.screenshots[1].doc);
-        setPreview3(doc?.screenshots[2].doc);
-        setPreview4(doc?.screenshots[3].doc);
-        return;
+        if (doc !== undefined) {
+          setSingleDoc(doc);
+          setResourceType(doc?.resourceType);
+          setFaculty(doc?.faculty);
+          setDepartment(doc?.department);
+          setLevel(doc?.level);
+          setSemester(doc?.semester);
+          setTitle(doc?.title);
+          setFeatures(doc?.features);
+          setPrice(doc?.price);
+          setLanguage(doc?.language);
+          setDescription(doc?.desc);
+          setDocPreview(doc?.doc?.doc);
+          setPreview1(doc?.screenshots[0].doc);
+          setPreview2(doc?.screenshots[1].doc);
+          setPreview3(doc?.screenshots[2].doc);
+          setPreview4(doc?.screenshots[3].doc);
+          return;
+        }
       }
     };
 
@@ -248,11 +333,25 @@ const UploadForm = () => {
                       }}
                     >
                       <GrDocumentText size={80} color="#398b18" />
+                      {docPreview && (
+                        <div style={{ minWidth: "100%", minHeight: "100%" }}>
+                          <img
+                            src={docPreview}
+                            alt={"preview"}
+                            style={{
+                              minWidth: "100%",
+                              minHeight: "220px",
+                              borderRadius: "10px",
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
-                    <div className="text-center font-bold mt-2">
-                      DRAG & DROP OR CLICK TO UPLOAD
-                    </div>
-                    <div>{uploadedDoc?.name}</div>
+                    {!docPreview && (
+                      <div className="text-center font-bold mt-2">
+                        DRAG & DROP OR CLICK TO UPLOAD
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -495,8 +594,11 @@ const UploadForm = () => {
                   padding: "10px 35px",
                   borderRadius: 5,
                 }}
+                onClick={() => {
+                  setStatusChange("approved");
+                }}
               >
-                APPROVE
+                {approvedLoading ? "LOADING..." : " APPROVE"}
               </button>
               <button
                 style={{
@@ -507,14 +609,24 @@ const UploadForm = () => {
                   borderRadius: 5,
                   marginLeft: 20,
                 }}
+                onClick={() => {
+                  setStatusChange("rejected");
+                }}
               >
-                REJECT
+                {rejectedLoading ? "LOADING..." : "REJECT"}
               </button>
             </div>
           )}
-          <button style={UploadBtnStyles} onClick={handleUpload}>
-            {loading ? "LOADING..." : " UPLOAD"}
-          </button>
+          {role !== "admin" &&
+            (singleDoc ? (
+              <button style={UploadBtnStyles} onClick={handleUpdateUpload}>
+                {loading ? "LOADING..." : " UPDATE"}
+              </button>
+            ) : (
+              <button style={UploadBtnStyles} onClick={handleUpload}>
+                {loading ? "LOADING..." : " UPLOAD"}
+              </button>
+            ))}
         </div>
       </div>
     </div>

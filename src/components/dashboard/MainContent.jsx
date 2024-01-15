@@ -3,7 +3,7 @@ import Cards from "../Cards";
 import Document from "../Document";
 import { AuthContext } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
-import { getVendorDocs } from "../../helpers/redux/resources";
+import { getVendorDocs, getAllDocs } from "../../helpers/redux/resources";
 import { useDispatch, useSelector } from "react-redux";
 
 const stats = [
@@ -38,11 +38,13 @@ const MainContent = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const getAllDocs = async () => {
-      await getVendorDocs(userId, dispatch, setLoading);
+    const getAllDocuments = async () => {
+      role === "admin"
+        ? await getAllDocs(dispatch, setLoading)
+        : await getVendorDocs(userId, dispatch, setLoading);
     };
 
-    getAllDocs();
+    getAllDocuments();
   }, [userId, dispatch]);
 
   useEffect(() => {

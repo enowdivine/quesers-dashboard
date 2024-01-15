@@ -29,6 +29,70 @@ export const create = createAsyncThunk(
   }
 );
 
+export const update = createAsyncThunk(
+  "resource/update",
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios.put(
+        `${url}/update-resource/${data.id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const message =
+        (error.message && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const updateStatus = createAsyncThunk(
+  "resource/updateStatus",
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios.put(
+        `${url}/update-status/${data.docId}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "Application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const message =
+        (error.message && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const allResources = createAsyncThunk(
+  "resource/allResources",
+  async (thunkAPI) => {
+    try {
+      const response = await axios.get(`${url}/resources`);
+      return response.data;
+    } catch (error) {
+      const message =
+        (error.message && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const vendorResources = createAsyncThunk(
   "resource/vendorResources",
   async (vendorId, thunkAPI) => {
@@ -71,6 +135,9 @@ export const resourceSlice = createSlice({
         state.resources.push(action.payload);
       })
       .addCase(vendorResources.fulfilled, (state, action) => {
+        state.resources = action.payload;
+      })
+      .addCase(allResources.fulfilled, (state, action) => {
         state.resources = action.payload;
       })
       .addCase(singleResource.fulfilled, (state, action) => {

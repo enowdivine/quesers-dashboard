@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { userLogout } from "../../helpers/redux/auth";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { cashoutRequest } from "../../helpers/redux/withdrawals";
 
 const FormStyle = {
   width: "100%",
@@ -28,17 +30,50 @@ const navItems = [
     title: "Home",
     link: "/dashboard",
   },
+  {
+    title: "Vendors",
+    link: "/vendors",
+  },
+  {
+    title: "Cashout Requests",
+    link: "/requests",
+  },
 ];
 const RightSidebar = () => {
   const [showForm, setShowForm] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState({ title: "Home" });
-  const { setAuthenticated, role } = useContext(AuthContext);
-  console.log(selected);
+  const { setAuthenticated, role, userId } = useContext(AuthContext);
   const dispatch = useDispatch();
 
   const handleLogout = () => {
     userLogout(dispatch);
     setAuthenticated(false);
+  };
+
+  const handleCashoutRequest = async (e) => {
+    e.preventDefault();
+    if ((amount, password)) {
+      const data = {
+        userId,
+        amount,
+        password,
+      };
+      const response = await cashoutRequest(data, dispatch, setLoading);
+      if (response.status === "error") {
+        toast.error(response.res.payload);
+        return;
+      } else {
+        toast.success(response.message.payload.message);
+        setAmount("");
+        setPassword("");
+        return;
+      }
+    } else {
+      toast.error("all fields are required");
+    }
   };
 
   return (
@@ -79,11 +114,17 @@ const RightSidebar = () => {
             </div>
             {showForm && (
               <div>
-                <input type="number" placeholder="Amount" style={FormStyle} />
+                <input
+                  type="number"
+                  placeholder="Amount"
+                  style={FormStyle}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
                 <input
                   type="password"
                   placeholder="**********"
                   style={FormStyle}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             )}
@@ -92,7 +133,13 @@ const RightSidebar = () => {
                 CASHOUT
               </button>
             )}
-            {showForm ? <button style={BtnStyle}>SUBMIT </button> : ""}
+            {showForm ? (
+              <button style={BtnStyle} onClick={handleCashoutRequest}>
+                {loading ? "Processing..." : "SUBMIT"}
+              </button>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       )}
