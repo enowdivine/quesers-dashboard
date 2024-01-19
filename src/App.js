@@ -3,6 +3,7 @@ import Login from "./pages/auth/Login";
 import Home from "./pages/dashboard/Home";
 import Upload from "./pages/dashboard/Upload";
 import CashoutRequest from "./pages/dashboard/cashoutRequestPages/CashoutRequest";
+import VendorPage from "./pages/dashboard/vendors/VendorsPage";
 import PageError from "./pages/PageError";
 import DocDetails from "./pages/dashboard/DocDetails";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -21,6 +22,7 @@ function App() {
           <Route path="/create" element={<Upload />} />
           <Route path="/requests" element={<CashoutRequest />} />
           <Route path="/doc-details/:id" element={<DocDetails />} />
+          <Route path="/vendors" element={<VendorPage />} />
 
           {/* 404 ROUTE */}
           <Route path="*" element={<PageError />} />

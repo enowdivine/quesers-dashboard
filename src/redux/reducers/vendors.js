@@ -24,6 +24,46 @@ export const getAllVendors = createAsyncThunk(
   }
 );
 
+export const getSingleVendorDetails = createAsyncThunk(
+  "vendors/getSingleVendorDetails",
+  async (userId, thunkAPI) => {
+    try {
+      const response = await axios.get(`${url}/vendor/${userId}`);
+      return response.data;
+    } catch (error) {
+      const message =
+        (error.message && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const setProfileImage = createAsyncThunk(
+  "vendors/setProfileImage",
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios.put(
+        `${url}/upload-profile-image/${data.id}`,
+        data.data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const message =
+        (error.message && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const resourceSlice = createSlice({
   name: "vendors",
   initialState,

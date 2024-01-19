@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import LeftSidebar from "../components/dashboard/LeftSidebar";
-import RightSidebar from "../components/dashboard/RightSidebar";
+import RightSidebar from "../components/dashboard/Rightsidebar/RightSidebar";
 import TopNav from "../components/dashboard/TopNav";
 
 import { AuthContext } from "../context/AuthContext";

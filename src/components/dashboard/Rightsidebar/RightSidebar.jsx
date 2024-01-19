@@ -1,11 +1,16 @@
-import React, { useState, useContext } from "react";
-import Cards from "../Cards";
+import React, { useState, useContext, useEffect } from "react";
+import Cards from "../../Cards";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
-import { userLogout } from "../../helpers/redux/auth";
+import { AuthContext } from "../../../context/AuthContext";
+import { userLogout } from "../../../helpers/redux/auth";
+import {
+  uploadProfileImage,
+  getVendorDetails,
+} from "../../../helpers/redux/vendors";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { cashoutRequest } from "../../helpers/redux/withdrawals";
+import { cashoutRequest } from "../../../helpers/redux/withdrawals";
+import { useDropzone } from "react-dropzone";
 
 const FormStyle = {
   width: "100%",
@@ -43,9 +48,11 @@ const RightSidebar = () => {
   const [showForm, setShowForm] = useState(false);
   const [amount, setAmount] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState({ title: "Home" });
-  const { setAuthenticated, role, userId } = useContext(AuthContext);
+  const { setAuthenticated, role, userId, email, setEmail, image, setImage } =
+    useContext(AuthContext);
   const dispatch = useDispatch();
 
   const handleLogout = () => {
@@ -76,6 +83,57 @@ const RightSidebar = () => {
     }
   };
 
+  const getUserInfo = async () => {
+    const response = await getVendorDetails(userId, dispatch, setLoading);
+    const user = response.message.payload;
+    console.log(user);
+    setImage(user?.avatar?.doc);
+    setEmail(user?.email);
+    setUsername(user?.username);
+  };
+
+  const { getRootProps: getProfileImage, getInputProps: getProfileImageInput } =
+    useDropzone({
+      onDrop: async (acceptedFiles) => {
+        const objectUrl = URL.createObjectURL(acceptedFiles[0]);
+        setImage(objectUrl);
+
+        const data = new FormData();
+        data.append("profileImage", acceptedFiles[0]);
+
+        const newData = {
+          id: userId,
+          data,
+        };
+        const response = await uploadProfileImage(
+          newData,
+          dispatch,
+          setLoading
+        );
+        if (response.status === "error") {
+          toast.error(response.res.payload);
+          return;
+        } else {
+          const vendor = response.message.payload.vendor;
+          const url = vendor.avatar.doc;
+          setImage(url);
+          toast.success(response.message.payload.message);
+          // free memory when ever this component is unmounted
+          return () => URL.revokeObjectURL(objectUrl);
+        }
+      },
+      accept: {
+        "image/jpeg": [],
+        "image/png": [],
+      },
+    });
+
+  useEffect(() => {
+    if (role === "vendor") {
+      getUserInfo();
+    }
+  }, [userId]);
+
   return (
     <div>
       {role === "vendor" && (
@@ -86,11 +144,14 @@ const RightSidebar = () => {
               justifyContent: "center",
               alignItems: "center",
             }}
+            {...getProfileImage()}
           >
+            <input {...getProfileImageInput()} />
             <img
-              src="/assets/images/image2.jpg"
+              src={image || "/assets/images/placeholder.jpeg"}
               alt="Profile"
               style={{
+                cursor: "pointer",
                 borderRadius: "50%",
                 width: 200,
                 padding: 6,
@@ -100,8 +161,9 @@ const RightSidebar = () => {
             />
           </div>
           <p style={{ textAlign: "center", fontWeight: "bold", marginTop: 10 }}>
-            Martha Sagasta
+            {username}
           </p>
+          <p style={{ textAlign: "center", marginTop: 10 }}>{email}</p>
           <div style={{ marginTop: 20 }}>
             <h4 style={{ fontWeight: "bold" }}>Your Account</h4>
             <div style={{ marginTop: 10 }}>

@@ -1,0 +1,19 @@
+.formStyle {
+  width: "100%";
+  border: "1px solid #ccc";
+  background-color: "#f0efef";
+  padding: 10;
+  border-radius: 5px;
+  margin-top: 10;
+  outline: "none";
+}
+
+.btnStyle {
+  color: "#fff";
+  background: "black";
+  width: "100%";
+  padding: 5;
+  font-weight: "bold";
+  margin-top: 15px;
+  border-radius: 5px;
+}

@@ -7,6 +7,8 @@ export const AuthContext = createContext();
 export default ({ children }) => {
   const [role, setRole] = useState("");
   const [userId, setUserId] = useState("");
+  const [email, setEmail] = useState("");
+  const [image, setImage] = useState(null);
   const [token, setToken] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
 
@@ -29,6 +31,10 @@ export default ({ children }) => {
         setRole,
         userId,
         setUserId,
+        email,
+        setEmail,
+        image,
+        setImage,
         token,
         setToken,
         authenticated,

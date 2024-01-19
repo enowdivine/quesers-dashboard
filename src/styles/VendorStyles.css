@@ -6,7 +6,7 @@
   margin-bottom: 5px;
 }
 .brand img {
-  width: 60px;
+  width: 50px;
   border-radius: 50%;
   border: 1px solid #398b18;
 }
@@ -132,6 +132,7 @@
 /* CASHOUT REQUEST TALE */
 .CRTable {
   max-height: 90vh;
+  max-width: 900px;
   overflow-y: scroll;
 }
 
@@ -148,13 +149,16 @@
 
 .CRTable table {
   border-collapse: collapse;
-  width: 100%;
+  /* width: 100%; */
+  max-width: 200px;
+  overflow: scroll;
 }
 
 .CRTable th,
 .CRTable td {
   text-align: left;
   padding: 8px;
+  min-width: 200px;
 }
 
 .CRTable tr:nth-child(even) {

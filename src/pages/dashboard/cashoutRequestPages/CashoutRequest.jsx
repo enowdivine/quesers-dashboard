@@ -4,11 +4,13 @@ import styles from "./styles.module.css";
 import {
   getVendorRequests,
   getAllCashoutRequests,
+  updateRequestStatus,
 } from "../../../helpers/redux/withdrawals";
 import { allVendors } from "../../../helpers/redux/vendors";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthContext } from "../../../context/AuthContext";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 const CashoutRequest = () => {
   const { role, userId } = useContext(AuthContext);
@@ -19,6 +21,11 @@ const CashoutRequest = () => {
   const allRequest = useSelector((state) => state.withdrawal.withdrawals);
   const allStateVendors = useSelector((state) => state.vendors.vendors);
 
+  const formatMoney = (amount) => {
+    let dollarUSLocale = Intl.NumberFormat("en-US");
+    return dollarUSLocale.format(amount);
+  };
+
   const getCashoutRequests = async () => {
     role === "admin"
       ? await getAllCashoutRequests(dispatch, setLoading)
@@ -27,6 +34,21 @@ const CashoutRequest = () => {
 
   const getAllVendors = async () => {
     await allVendors(dispatch, setLoading);
+  };
+
+  const updateRequest = async (item) => {
+    const data = {
+      id: item.id,
+      status: item.status,
+    };
+    const response = await updateRequestStatus(data, dispatch, setLoading);
+    if (response.status === "error") {
+      toast.error(response.res.payload);
+      return;
+    } else {
+      toast.success(response.message.payload.message);
+      return;
+    }
   };
 
   useEffect(() => {
@@ -69,7 +91,7 @@ const CashoutRequest = () => {
                   <td>{vendor?.username}</td>
                   <td>{vendor?.phone}</td>
                   <td>{vendor?.email}</td>
-                  <td>{item?.amount}</td>
+                  <td>{formatMoney(item?.amount)} XAF</td>
                   <td
                     style={
                       item.status === "pending"
@@ -82,10 +104,26 @@ const CashoutRequest = () => {
                     {item?.status}
                   </td>
                   <td>{moment(item?.createdAt).format("DD-MM-YYYY HH:mm")}</td>
-                  <td>
-                    <button className={styles.actionBtn}>Approve</button>
-                    <button className={styles.actionBtnDecline}>Decline</button>
-                  </td>
+                  {role === "admin" && (
+                    <td>
+                      <button
+                        className={styles.actionBtn}
+                        onClick={() =>
+                          updateRequest({ id: item._id, status: "approved" })
+                        }
+                      >
+                        Approve
+                      </button>
+                      <button
+                        className={styles.actionBtnDecline}
+                        onClick={() =>
+                          updateRequest({ id: item._id, status: "declined" })
+                        }
+                      >
+                        Decline
+                      </button>
+                    </td>
+                  )}
                 </tr>
               );
             })

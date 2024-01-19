@@ -1,5 +1,6 @@
 import {
   create,
+  updateStatus,
   vendorRequests,
   allCashoutRequests,
 } from "../../redux/reducers/withdrawals";
@@ -44,6 +45,24 @@ export const getAllCashoutRequests = async (dispatch, setLoading) => {
   setLoading(true);
   try {
     const response = await dispatch(allCashoutRequests()).then((res) => {
+      if (res.meta.requestStatus === "rejected") {
+        return { status: "error", message: "response error", res };
+      } else {
+        return { status: "success", message: res };
+      }
+    });
+    setLoading(false);
+    return response;
+  } catch (error) {
+    setLoading(false);
+    return { status: "error", message: "catch error", error };
+  }
+};
+
+export const updateRequestStatus = async (data, dispatch, setLoading) => {
+  setLoading(true);
+  try {
+    const response = await dispatch(updateStatus(data)).then((res) => {
       if (res.meta.requestStatus === "rejected") {
         return { status: "error", message: "response error", res };
       } else {

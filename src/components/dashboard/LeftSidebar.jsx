@@ -49,7 +49,7 @@ const LeftSidebar = () => {
   return (
     <div>
       <div className="brand">
-        <img src="/assets/images/image1.jpg" alt="OutShine Logo" />
+        <img src="/assets/images/logo.png" alt="OutShine Logo" />
         <p>OutShine</p>
       </div>
       <h4 className="leftsidebarNavTitle">Actions</h4>
