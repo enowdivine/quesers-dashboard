@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const url = `${process.env.REACT_APP_SERVER_URL}/api/${process.env.REACT_APP_API_VERSION}/withdrawal`;
+const userToken = localStorage.getItem("quesers-admin");
 
 const initialState = {
   withdrawals: [],
@@ -14,6 +15,7 @@ export const create = createAsyncThunk(
     try {
       const response = await axios.post(`${url}/withdrawal-request`, data, {
         headers: {
+          Authorization: `Bearer ${userToken}`,
           "Content-Type": "Application/json",
         },
       });
@@ -37,6 +39,7 @@ export const updateStatus = createAsyncThunk(
         data,
         {
           headers: {
+            Authorization: `Bearer ${userToken}`,
             "Content-Type": "Application/json",
           },
         }
@@ -56,7 +59,11 @@ export const vendorRequests = createAsyncThunk(
   "withdrawals/vendorRequests",
   async (userId, thunkAPI) => {
     try {
-      const response = await axios.get(`${url}/requests/${userId}`);
+      const response = await axios.get(`${url}/requests/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       return response.data;
     } catch (error) {
       const message =
@@ -72,7 +79,11 @@ export const allCashoutRequests = createAsyncThunk(
   "withdrawals/allCashoutRequests",
   async (thunkAPI) => {
     try {
-      const response = await axios.get(`${url}/all-requests`);
+      const response = await axios.get(`${url}/all-requests`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       return response.data;
     } catch (error) {
       const message =

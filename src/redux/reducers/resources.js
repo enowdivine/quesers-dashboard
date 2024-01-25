@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const url = `${process.env.REACT_APP_SERVER_URL}/api/${process.env.REACT_APP_API_VERSION}/resource`;
+const userToken = localStorage.getItem("quesers-admin");
 
 const initialState = {
   resources: [],
@@ -14,6 +15,7 @@ export const create = createAsyncThunk(
     try {
       const response = await axios.post(`${url}/create`, data, {
         headers: {
+          Authorization: `Bearer ${userToken}`,
           "Content-Type": "multipart/form-data",
           // Authorization: "Bearer yourAccessToken",
         },
@@ -38,6 +40,7 @@ export const update = createAsyncThunk(
         data,
         {
           headers: {
+            Authorization: `Bearer ${userToken}`,
             "Content-Type": "multipart/form-data",
           },
         }
@@ -62,6 +65,7 @@ export const updateStatus = createAsyncThunk(
         data,
         {
           headers: {
+            Authorization: `Bearer ${userToken}`,
             "Content-Type": "Application/json",
           },
         }
@@ -81,7 +85,11 @@ export const allResources = createAsyncThunk(
   "resource/allResources",
   async (thunkAPI) => {
     try {
-      const response = await axios.get(`${url}/resources`);
+      const response = await axios.get(`${url}/resources`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       return response.data;
     } catch (error) {
       const message =
@@ -97,7 +105,11 @@ export const vendorResources = createAsyncThunk(
   "resource/vendorResources",
   async (vendorId, thunkAPI) => {
     try {
-      const response = await axios.get(`${url}/vendor-resources/${vendorId}`);
+      const response = await axios.get(`${url}/vendor-resources/${vendorId}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       return response.data;
     } catch (error) {
       const message =
@@ -113,7 +125,11 @@ export const singleResource = createAsyncThunk(
   "resource/singleResource",
   async (resourceId, thunkAPI) => {
     try {
-      const response = await axios.get(`${url}/resource/${resourceId}`);
+      const response = await axios.get(`${url}/resource/${resourceId}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       return response.data;
     } catch (error) {
       const message =

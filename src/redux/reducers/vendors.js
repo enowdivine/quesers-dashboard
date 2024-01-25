@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const url = `${process.env.REACT_APP_SERVER_URL}/api/${process.env.REACT_APP_API_VERSION}/vendor`;
+const userToken = localStorage.getItem("quesers-admin");
 
 const initialState = {
   vendors: [],
@@ -12,7 +13,11 @@ export const getAllVendors = createAsyncThunk(
   "vendors/getAllVendors",
   async (thunkAPI) => {
     try {
-      const response = await axios.get(`${url}/vendors`);
+      const response = await axios.get(`${url}/vendors`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       return response.data;
     } catch (error) {
       const message =
@@ -28,7 +33,11 @@ export const getSingleVendorDetails = createAsyncThunk(
   "vendors/getSingleVendorDetails",
   async (userId, thunkAPI) => {
     try {
-      const response = await axios.get(`${url}/vendor/${userId}`);
+      const response = await axios.get(`${url}/vendor/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       return response.data;
     } catch (error) {
       const message =
@@ -49,6 +58,7 @@ export const setProfileImage = createAsyncThunk(
         data.data,
         {
           headers: {
+            Authorization: `Bearer ${userToken}`,
             "Content-Type": "multipart/form-data",
           },
         }
