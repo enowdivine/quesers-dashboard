@@ -36,6 +36,18 @@ const navItems = [
     link: "/dashboard",
   },
   {
+    title: "Schools/Exams",
+    link: "/exams",
+  },
+  {
+    title: "Faculties",
+    link: "/faculties",
+  },
+  {
+    title: "Departments",
+    link: "/departments",
+  },
+  {
     title: "Vendors",
     link: "/vendors",
   },
@@ -86,7 +98,7 @@ const RightSidebar = () => {
   const getUserInfo = async () => {
     const response = await getVendorDetails(userId, dispatch, setLoading);
     const user = response.message.payload;
-    console.log(user);
+    // console.log(user);
     setImage(user?.avatar?.doc);
     setEmail(user?.email);
     setUsername(user?.username);
@@ -208,7 +220,7 @@ const RightSidebar = () => {
       {role === "admin" && (
         <div>
           <h4 style={{ fontWeight: "bold" }}>MENU</h4>
-          <ul sty>
+          <ul className="rightsidebarNav">
             {navItems.map((item, index) => (
               <Link
                 key={index}

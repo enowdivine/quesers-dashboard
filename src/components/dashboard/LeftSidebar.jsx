@@ -75,7 +75,7 @@ const LeftSidebar = () => {
         </ul>
       )}
       {role === "admin" && (
-        <ul>
+        <ul className="leftsidebarNav">
           {docsItems.map((item, index) => (
             <Link
               key={index}

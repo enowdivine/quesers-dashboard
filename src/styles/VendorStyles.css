@@ -19,12 +19,19 @@
   color: #ccc;
 }
 
+.leftsidebarNav {
+  display: block;
+  padding: 0;
+}
+
 .leftsidebarNavItems {
   display: block;
   padding: 10px;
   font-size: 15px;
   border-radius: 5px;
   cursor: pointer;
+  text-decoration: none;
+  color: black;
 }
 
 .selectedNavItem {
@@ -37,12 +44,21 @@
   background-color: whitesmoke;
 }
 
+.rightsidebarNav{
+  width: 100%;
+  padding: 0;
+}
+
 .rightsidebarNavItems {
+  text-decoration: none;
+  color: black;
   display: block;
   padding: 10px;
   font-size: 15px;
   border-radius: 5px;
   cursor: pointer;
+  margin-bottom: 5px;
+  
 }
 .rightsidebarNavItems:hover {
   background-color: whitesmoke;
