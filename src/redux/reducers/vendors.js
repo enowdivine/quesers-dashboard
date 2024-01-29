@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const url = `${process.env.REACT_APP_SERVER_URL}/api/${process.env.REACT_APP_API_VERSION}/vendor`;
@@ -74,6 +74,31 @@ export const setProfileImage = createAsyncThunk(
   }
 );
 
+export const updateStatus = createAsyncThunk(
+  "vendors/updateStatus",
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios.put(
+        `${url}/update-vendor-status/${data.id}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "Content-Type": "Application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const message =
+        (error.message && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const resourceSlice = createSlice({
   name: "vendors",
   initialState,
@@ -81,7 +106,19 @@ export const resourceSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getAllVendors.fulfilled, (state, action) => {
       state.vendors = action.payload;
-    });
+    })
+      .addCase(updateStatus.fulfilled, (state, action) => {
+        const id = action.payload.response._id
+        const status = action.payload.response.status
+        let currentState = current(state).vendors
+        let newArray = currentState.map(item => {
+          if (item._id === id) {
+            return { ...item, status }
+          }
+          return item
+        })
+        state.vendors = newArray
+      })
   },
 });
 

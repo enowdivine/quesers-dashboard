@@ -1,11 +1,12 @@
 import React, { useState, useContext, useEffect } from "react";
 import Layout from "../../../layouts/Layout";
 import styles from "./styles.module.css";
-import { allVendors } from "../../../helpers/redux/vendors";
+import { allVendors, updateVendorStatus } from "../../../helpers/redux/vendors";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthContext } from "../../../context/AuthContext";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const VendorPage = () => {
   const { role, userId } = useContext(AuthContext);
@@ -16,6 +17,28 @@ const VendorPage = () => {
 
   const getAllVendors = async () => {
     await allVendors(dispatch, setLoading);
+  };
+
+  const updateStatus = async (item) => {
+    var result = window.confirm(
+      `Are you sure you want to approve ${item.name}?`
+    );
+    if (result) {
+      const data = {
+        id: item.id,
+        status: item.status,
+      };
+      const response = await updateVendorStatus(data, dispatch, setLoading);
+      if (response.status === "error") {
+        toast.error(response.res.payload);
+        return;
+      } else {
+        toast.success(response.message.payload.message);
+        return;
+      }
+    } else {
+      return;
+    }
   };
 
   useEffect(() => {
@@ -45,7 +68,7 @@ const VendorPage = () => {
           </tr>
           {loading ? (
             <tr>
-              <td colSpan={6}>Loading...</td>
+              <td colSpan={10}>Loading...</td>
             </tr>
           ) : (
             vendors &&
@@ -86,8 +109,30 @@ const VendorPage = () => {
                   <td>{item?.totalRevenue}</td>
                   <td>{moment(item?.createdAt).format("DD-MM-YYYY HH:mm")}</td>
                   <td>
-                    <button className={styles.actionBtn}>Approve</button>
-                    <button className={styles.actionBtnDecline}>Decline</button>
+                    <button
+                      className={styles.actionBtn}
+                      onClick={() =>
+                        updateStatus({
+                          id: item._id,
+                          name: item.username,
+                          status: "approved",
+                        })
+                      }
+                    >
+                      Approve
+                    </button>
+                    <button
+                      className={styles.actionBtnDecline}
+                      onClick={() =>
+                        updateStatus({
+                          id: item._id,
+                          name: item.username,
+                          status: "rejected",
+                        })
+                      }
+                    >
+                      Decline
+                    </button>
                   </td>
                 </tr>
               );
