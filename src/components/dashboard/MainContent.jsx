@@ -94,7 +94,7 @@ const MainContent = () => {
         </h4>
       </div>
       <div className="docs">
-        {loading && (
+        {loading ? (
           <div
             style={{
               width: "100%",
@@ -103,8 +103,8 @@ const MainContent = () => {
           >
             Loading...
           </div>
-        )}
-        {docs.length > 0 &&
+        ) : (
+          docs.length > 0 &&
           docs.map((item, index) => (
             <Link
               style={{
@@ -128,7 +128,8 @@ const MainContent = () => {
                 }
               />
             </Link>
-          ))}
+          ))
+        )}
       </div>
     </div>
   );
