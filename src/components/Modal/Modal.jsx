@@ -73,7 +73,7 @@ function ModalComponent({ action, item, editShow, editClose }) {
     try {
       if (title) {
         const data = {
-          id: item._id,
+          id: item?._id,
           title,
           schoolId: selectedSchool,
           facultyId: selectedFaculty,
