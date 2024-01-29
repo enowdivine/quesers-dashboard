@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const url = `${process.env.REACT_APP_SERVER_URL}/api/${process.env.REACT_APP_API_VERSION}/faculties`;
@@ -35,12 +35,12 @@ export const update = createAsyncThunk(
     async (data, thunkAPI) => {
         try {
             const response = await axios.put(
-                `${url}/update-resource/${data.id}`,
+                `${url}/update/${data.id}`,
                 data,
                 {
                     headers: {
                         Authorization: `Bearer ${userToken}`,
-                        "Content-Type": "multipart/form-data",
+                        "Content-Type": "application/json",
                     },
                 }
             );
@@ -54,7 +54,6 @@ export const update = createAsyncThunk(
         }
     }
 );
-
 
 export const allFaculties = createAsyncThunk(
     "faculty/allFaculties",
@@ -76,12 +75,11 @@ export const allFaculties = createAsyncThunk(
     }
 );
 
-
-export const singleResourceType = createAsyncThunk(
-    "faculty/singleResourceType",
-    async (resourceId, thunkAPI) => {
+export const deleteFacultyHandler = createAsyncThunk(
+    "faculty/deleteFacultyHandler",
+    async (data, thunkAPI) => {
         try {
-            const response = await axios.get(`${url}/resource/${resourceId}`, {
+            const response = await axios.delete(`${url}/delete/${data._id}`, {
                 headers: {
                     Authorization: `Bearer ${userToken}`,
                 },
@@ -108,6 +106,20 @@ export const resourceSlice = createSlice({
             })
             .addCase(allFaculties.fulfilled, (state, action) => {
                 state.faculties = action.payload;
+            })
+            .addCase(update.fulfilled, (state, action) => {
+                const id = action.payload.response._id
+                const title = action.payload.response.title
+                const slug = action.payload.response.slug
+                const schoolId = action.payload.response.schoolId
+                let currentState = current(state).faculties
+                let newArray = currentState.map(item => {
+                    if (item._id === id) {
+                        return { ...item, title, slug, schoolId }
+                    }
+                    return item
+                })
+                state.faculties = newArray
             })
     },
 });

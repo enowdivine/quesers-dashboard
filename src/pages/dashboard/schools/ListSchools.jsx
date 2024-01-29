@@ -1,15 +1,21 @@
 import React, { useState, useContext, useEffect } from "react";
 import Layout from "../../../layouts/Layout";
 import styles from "./styles.module.css";
-import { getAllResourceTypes } from "../../../helpers/redux/resourseTypes";
+import {
+  getAllResourceTypes,
+  deleteHandler,
+} from "../../../helpers/redux/resourseTypes";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthContext } from "../../../context/AuthContext";
 import moment from "moment";
 import ModalComponent from "../../../components/Modal/Modal";
+import { toast } from "react-toastify";
 
 const ListSchools = () => {
   const { role, userId } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const [editExam, setEditExam] = useState(false);
+  const [editItem, setEditItem] = useState(null);
   const [rsType, setRsType] = useState([]);
   const dispatch = useDispatch();
   const resourceTypeState = useSelector(
@@ -18,6 +24,25 @@ const ListSchools = () => {
 
   const resourceTypes = async () => {
     await getAllResourceTypes(dispatch, setLoading);
+  };
+
+  const handleDelete = async (item) => {
+    var result = window.confirm(
+      `Are you sure you want to delete ${item.title}?`
+    );
+    if (result) {
+      const response = await deleteHandler(item, dispatch, setLoading);
+      if (response.status === "error") {
+        toast.error(response.res.payload);
+        return;
+      } else {
+        toast.success(response.message.payload.message);
+        return;
+      }
+    } else {
+      console.log("Logout canceled.");
+      return;
+    }
   };
 
   useEffect(() => {
@@ -30,7 +55,12 @@ const ListSchools = () => {
 
   return (
     <Layout>
-      <ModalComponent action="exams" />
+      <ModalComponent
+        action="exams"
+        item={editItem}
+        editShow={editExam}
+        editClose={setEditExam}
+      />
       <div className="CRTable">
         <table>
           <tr>
@@ -50,8 +80,21 @@ const ListSchools = () => {
                   <td>{item?.title}</td>
                   <td>{moment(item?.createdAt).format("DD-MM-YYYY HH:mm")}</td>
                   <td>
-                    <button className={styles.actionBtn}>Edit</button>
-                    <button className={styles.actionBtnDecline}>Delete</button>
+                    <button
+                      className={styles.actionBtn}
+                      onClick={() => {
+                        setEditExam(!editExam);
+                        setEditItem(item);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className={styles.actionBtnDecline}
+                      onClick={() => handleDelete(item)}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               );
