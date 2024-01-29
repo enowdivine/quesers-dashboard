@@ -177,12 +177,12 @@ function ModalComponent({ action, item, editShow, editClose }) {
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <button className={styles.cancelBtn} onClick={handleClose}>
             Close
-          </Button>
-          <Button variant="primary" onClick={handleSubmit}>
+          </button>
+          <button className={styles.createBtn} onClick={handleSubmit}>
             {loading ? "Loading ..." : editShow ? "Update" : "Submit"}
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </>

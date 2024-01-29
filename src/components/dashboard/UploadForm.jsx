@@ -9,6 +9,9 @@ import {
   updateDoc,
   updateDocStatus,
 } from "../../helpers/redux/resources";
+import { getAllResourceTypes } from "../../helpers/redux/resourseTypes";
+import { getAllFaculties } from "../../helpers/redux/faculties";
+import { getAllDepartments } from "../../helpers/redux/departments";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -30,6 +33,17 @@ const UploadForm = () => {
   const [rejectedLoading, setRejectedLoading] = useState(false);
   const [singleDoc, setSingleDoc] = useState(null);
   const allDocs = useSelector((state) => state.resource.resources);
+  const resourceTypeState = useSelector(
+    (state) => state.resourceType.resourceTypes
+  );
+  const allStateFaculties = useSelector((state) => state.faculties.faculties);
+  const allStateDepartments = useSelector(
+    (state) => state.departments.departments
+  );
+
+  const [rsType, setRsType] = useState([]);
+  const [faculties, setFaculties] = useState([]);
+  const [departments, setDepartments] = useState([]);
 
   const [uploadedDoc, setUploadedDoc] = useState(null);
   const [screenshotsOne, setSecreenshotOne] = useState(null);
@@ -128,6 +142,12 @@ const UploadForm = () => {
         "image/png": [],
       },
     });
+
+  const getRequiredData = async () => {
+    await getAllResourceTypes(dispatch, setLoading);
+    await getAllFaculties(dispatch, setLoading);
+    await getAllDepartments(dispatch, setLoading);
+  };
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -249,6 +269,22 @@ const UploadForm = () => {
   const setStatusChange = (value) => {
     handleUpdateStatus(value);
   };
+
+  useEffect(() => {
+    getRequiredData();
+  }, []);
+
+  useEffect(() => {
+    setRsType(resourceTypeState);
+  }, [resourceTypeState]);
+
+  useEffect(() => {
+    setFaculties(allStateFaculties);
+  }, [allStateFaculties]);
+
+  useEffect(() => {
+    setDepartments(allStateDepartments);
+  }, [allStateDepartments]);
 
   useEffect(() => {
     const getDocById = () => {
@@ -386,6 +422,7 @@ const UploadForm = () => {
                                 minWidth: "100%",
                                 minHeight: "220px",
                                 borderRadius: "10px",
+                                border: "1px solid black",
                               }}
                             />
                           </div>
@@ -413,6 +450,7 @@ const UploadForm = () => {
                                 minWidth: "100%",
                                 minHeight: "220px",
                                 borderRadius: "10px",
+                                border: "1px solid black",
                               }}
                             />
                           </div>
@@ -442,6 +480,7 @@ const UploadForm = () => {
                                 minWidth: "100%",
                                 minHeight: "220px",
                                 borderRadius: "10px",
+                                border: "1px solid black",
                               }}
                             />
                           </div>
@@ -469,6 +508,7 @@ const UploadForm = () => {
                                 minWidth: "100%",
                                 minHeight: "220px",
                                 borderRadius: "10px",
+                                border: "1px solid black",
                               }}
                             />
                           </div>
@@ -492,9 +532,15 @@ const UploadForm = () => {
               onChange={(e) => setResourceType(e.target.value)}
             >
               <option>Exam/School</option>
-              <option value={"University of Buea"}>University of Buea</option>
-              <option value={"Ordinary Level"}>Ordinary Level</option>
-              <option value={"Advanced Level"}>Advanced Level</option>
+              {rsType.length > 0 ? (
+                rsType.map((item) => (
+                  <option key={item._id} value={item._id}>
+                    {item.title}
+                  </option>
+                ))
+              ) : (
+                <option>Loading Exams/schools ...</option>
+              )}
             </select>
             <select
               className="uploadFormInput"
@@ -502,8 +548,15 @@ const UploadForm = () => {
               onChange={(e) => setFaculty(e.target.value)}
             >
               <option>Faculty</option>
-              <option value={"Arts"}>Arts</option>
-              <option value={"Science"}>Science</option>
+              {faculties.length > 0 ? (
+                faculties.map((item) => (
+                  <option key={item._id} value={item._id}>
+                    {item.title}
+                  </option>
+                ))
+              ) : (
+                <option>Loading Faculties ...</option>
+              )}
             </select>
             <select
               className="uploadFormInput"
@@ -511,8 +564,15 @@ const UploadForm = () => {
               onChange={(e) => setDepartment(e.target.value)}
             >
               <option>Department</option>
-              <option value={"Computer"}>Ccomputer</option>
-              <option value={"Electrical"}>Electrical</option>
+              {departments.length > 0 ? (
+                departments.map((item) => (
+                  <option key={item._id} value={item._id}>
+                    {item.title}
+                  </option>
+                ))
+              ) : (
+                <option>Loading Exams/schools ...</option>
+              )}
             </select>
             <select
               className="uploadFormInput"
@@ -524,6 +584,7 @@ const UploadForm = () => {
               <option value={300}>300</option>
               <option value={400}>400</option>
               <option value={500}>500</option>
+              <option value={600}>600</option>
             </select>
             <select
               className="uploadFormInput"
@@ -531,8 +592,8 @@ const UploadForm = () => {
               onChange={(e) => setSemester(e.target.value)}
             >
               <option>Semester</option>
-              <option value={"First Semester"}>First Semester</option>
-              <option value={"Second Semester"}>Second Semester</option>
+              <option value={"first"}>First Semester</option>
+              <option value={"second"}>Second Semester</option>
             </select>
             <select
               className="uploadFormInput"
@@ -540,8 +601,8 @@ const UploadForm = () => {
               onChange={(e) => setLanguage(e.target.value)}
             >
               <option>Language</option>
-              <option value={"English"}>English</option>
-              <option value={"French"}>French</option>
+              <option value={"english"}>English</option>
+              <option value={"french"}>French</option>
             </select>
           </div>
           <h4

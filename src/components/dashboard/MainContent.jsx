@@ -107,7 +107,12 @@ const MainContent = () => {
         {docs.length > 0 &&
           docs.map((item, index) => (
             <Link
-              style={{ width: "20%" }}
+              style={{
+                width: "20%",
+                height: "20px",
+                textDecoration: "none",
+                color: "black",
+              }}
               to={`/doc-details/${item._id}`}
               key={index}
             >
