@@ -51,6 +51,9 @@ const VendorPage = () => {
 
   return (
     <Layout>
+      <div className={styles.headingTitle}>
+        <h5>List Of Vendors</h5>
+      </div>
       <div className="CRTable">
         <table>
           <tr>

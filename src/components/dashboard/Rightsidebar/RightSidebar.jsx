@@ -98,9 +98,9 @@ const RightSidebar = () => {
         toast.error(response.res.payload);
         return;
       } else {
-        toast.success(response.message.payload.message);
         setAmount("");
         setPassword("");
+        toast.success(response.message.payload.message);
         return;
       }
     } else {
@@ -205,12 +205,14 @@ const RightSidebar = () => {
                   type="number"
                   placeholder="Amount"
                   style={FormStyle}
+                  value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                 />
                 <input
                   type="password"
                   placeholder="**********"
                   style={FormStyle}
+                  value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
@@ -244,7 +246,10 @@ const RightSidebar = () => {
                 {item.title}
               </Link>
             ))}
-            <Link onClick={handleLogout} className="rightsidebarNavItems">
+            <Link
+              onClick={handleLogout}
+              className="rightsidebarNavItems text-danger"
+            >
               Logout
             </Link>
           </ul>

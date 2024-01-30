@@ -55,12 +55,15 @@ const ListSchools = () => {
 
   return (
     <Layout>
-      <ModalComponent
-        action="schools"
-        item={editItem}
-        editShow={editExam}
-        editClose={setEditExam}
-      />
+      <div className={styles.headingTitle}>
+        <h5>List Of Schools</h5>
+        <ModalComponent
+          action="schools"
+          item={editItem}
+          editShow={editExam}
+          editClose={setEditExam}
+        />
+      </div>
       <div className="CRTable">
         <table>
           <tr>

@@ -66,6 +66,9 @@ const CashoutRequest = () => {
 
   return (
     <Layout>
+      <div className={styles.headingTitle}>
+        <h5>List Of Requests</h5>
+      </div>
       <div className="CRTable">
         <table>
           <tr>

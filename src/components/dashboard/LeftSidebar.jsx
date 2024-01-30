@@ -74,7 +74,10 @@ const LeftSidebar = () => {
               {item.title}
             </Link>
           ))}
-          <Link onClick={handleLogout} className={"leftsidebarNavItems"}>
+          <Link
+            onClick={handleLogout}
+            className={"leftsidebarNavItems text-danger"}
+          >
             Logout
           </Link>
         </ul>

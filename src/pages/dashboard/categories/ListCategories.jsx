@@ -53,12 +53,15 @@ const ListCategories = () => {
 
   return (
     <Layout>
-      <ModalComponent
-        action="categories"
-        item={editItem}
-        editShow={editCategory}
-        editClose={setEditCategory}
-      />
+      <div className={styles.headingTitle}>
+        <h5>List Of Categories</h5>
+        <ModalComponent
+          action="categories"
+          item={editItem}
+          editShow={editCategory}
+          editClose={setEditCategory}
+        />
+      </div>
       <div className="CRTable">
         <table>
           <tr>
