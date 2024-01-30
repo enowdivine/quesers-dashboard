@@ -42,8 +42,13 @@ const LeftSidebar = () => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    userLogout(dispatch);
-    setAuthenticated(false);
+    var result = window.confirm(`Are you sure you want to logout?`);
+    if (result) {
+      userLogout(dispatch);
+      setAuthenticated(false);
+    } else {
+      return;
+    }
   };
 
   return (

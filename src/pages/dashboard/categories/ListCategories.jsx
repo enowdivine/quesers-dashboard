@@ -2,28 +2,26 @@ import React, { useState, useContext, useEffect } from "react";
 import Layout from "../../../layouts/Layout";
 import styles from "./styles.module.css";
 import {
-  getAllResourceTypes,
+  getAllCategories,
   deleteHandler,
-} from "../../../helpers/redux/resourseTypes";
+} from "../../../helpers/redux/categories";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthContext } from "../../../context/AuthContext";
 import moment from "moment";
 import ModalComponent from "../../../components/Modal/Modal";
 import { toast } from "react-toastify";
 
-const ListSchools = () => {
+const ListCategories = () => {
   const { role, userId } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const [editExam, setEditExam] = useState(false);
+  const [editCategory, setEditCategory] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [rsType, setRsType] = useState([]);
   const dispatch = useDispatch();
-  const resourceTypeState = useSelector(
-    (state) => state.resourceType.resourceTypes
-  );
+  const categoriesStates = useSelector((state) => state.categories.categories);
 
   const resourceTypes = async () => {
-    await getAllResourceTypes(dispatch, setLoading);
+    await getAllCategories(dispatch, setLoading);
   };
 
   const handleDelete = async (item) => {
@@ -50,16 +48,16 @@ const ListSchools = () => {
   }, [userId]);
 
   useEffect(() => {
-    setRsType(resourceTypeState);
-  }, [resourceTypeState]);
+    setRsType(categoriesStates);
+  }, [categoriesStates]);
 
   return (
     <Layout>
       <ModalComponent
-        action="schools"
+        action="categories"
         item={editItem}
-        editShow={editExam}
-        editClose={setEditExam}
+        editShow={editCategory}
+        editClose={setEditCategory}
       />
       <div className="CRTable">
         <table>
@@ -73,7 +71,7 @@ const ListSchools = () => {
               <td colSpan={6}>Loading...</td>
             </tr>
           ) : (
-            rsType.length > 0 &&
+            rsType?.length > 0 &&
             rsType.map((item, index) => {
               return (
                 <tr key={index}>
@@ -83,7 +81,7 @@ const ListSchools = () => {
                     <button
                       className={styles.actionBtn}
                       onClick={() => {
-                        setEditExam(!editExam);
+                        setEditCategory(!editCategory);
                         setEditItem(item);
                       }}
                     >
@@ -106,4 +104,4 @@ const ListSchools = () => {
   );
 };
 
-export default ListSchools;
+export default ListCategories;

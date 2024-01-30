@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import styles from "./modalstyles.module.css";
 import {
@@ -16,6 +15,8 @@ import {
   createDepartment,
   updateDepartment,
 } from "../../helpers/redux/departments";
+import { createExam, updateExam } from "../../helpers/redux/exams";
+import { createCategory, updateCategory } from "../../helpers/redux/categories";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -79,16 +80,24 @@ function ModalComponent({ action, item, editShow, editClose }) {
           facultyId: selectedFaculty,
         };
         const response = editShow
-          ? action === "exams"
+          ? action === "schools"
             ? await updateResourseType(data, dispatch, setLoading)
             : action === "faculties"
               ? await updateFaculty(data, dispatch, setLoading)
-              : await updateDepartment(data, dispatch, setLoading)
-          : action === "exams"
+              : action === "departments"
+                ? await updateDepartment(data, dispatch, setLoading)
+                : action === "exams"
+                  ? await updateExam(data, dispatch, setLoading)
+                  : await updateCategory(data, dispatch, setLoading)
+          : action === "schools"
             ? await createResourseType(data, dispatch, setLoading)
             : action === "faculties"
               ? await createFaculty(data, dispatch, setLoading)
-              : await createDepartment(data, dispatch, setLoading);
+              : action === "departments"
+                ? await createDepartment(data, dispatch, setLoading)
+                : action === "exams"
+                  ? await createExam(data, dispatch, setLoading)
+                  : await createCategory(data, dispatch, setLoading);
         if (response.status === "error") {
           toast.error(response.res.payload);
           return;
@@ -120,13 +129,15 @@ function ModalComponent({ action, item, editShow, editClose }) {
       >
         <Modal.Header closeButton>
           <Modal.Title>
-            {action === "exams"
-              ? "Exam/school"
+            {action === "schools"
+              ? "School"
               : action === "departments"
                 ? "Department"
-                : "faculties"
+                : action === "faculties"
                   ? "Faculty"
-                  : ""}
+                  : action === "exams"
+                    ? "Exam"
+                    : ""}
             {"  "}
             Name
           </Modal.Title>
@@ -146,7 +157,7 @@ function ModalComponent({ action, item, editShow, editClose }) {
                     </option>
                   ))
                 ) : (
-                  <option>Loading Exams/schools ...</option>
+                  <option>Loading Schools ...</option>
                 )}
               </select>
             )}

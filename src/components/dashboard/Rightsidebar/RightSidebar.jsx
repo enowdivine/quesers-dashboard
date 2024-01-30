@@ -36,7 +36,11 @@ const navItems = [
     link: "/dashboard",
   },
   {
-    title: "Schools/Exams",
+    title: "Schools",
+    link: "/schools",
+  },
+  {
+    title: "Exams",
     link: "/exams",
   },
   {
@@ -46,6 +50,10 @@ const navItems = [
   {
     title: "Departments",
     link: "/departments",
+  },
+  {
+    title: "Categories",
+    link: "/categories",
   },
   {
     title: "Vendors",
@@ -68,8 +76,13 @@ const RightSidebar = () => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    userLogout(dispatch);
-    setAuthenticated(false);
+    var result = window.confirm(`Are you sure you want to logout?`);
+    if (result) {
+      userLogout(dispatch);
+      setAuthenticated(false);
+    } else {
+      return;
+    }
   };
 
   const handleCashoutRequest = async (e) => {

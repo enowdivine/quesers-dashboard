@@ -106,22 +106,13 @@ const MainContent = () => {
         ) : (
           docs.length > 0 &&
           docs.map((item, index) => (
-            <Link
-              style={{
-                width: "20%",
-                height: "20px",
-                textDecoration: "none",
-                color: "black",
-              }}
-              to={`/doc-details/${item._id}`}
-              key={index}
-            >
+            <Link to={`/doc-details/${item._id}`} key={index}>
               <Document
                 key={index}
                 title={item.title}
                 color={
                   item.status === "pending"
-                    ? "yellow"
+                    ? "#f4f124"
                     : item.status === "rejected"
                       ? "red"
                       : "green"

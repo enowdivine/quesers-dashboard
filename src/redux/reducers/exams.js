@@ -1,16 +1,16 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const url = `${process.env.REACT_APP_SERVER_URL}/api/${process.env.REACT_APP_API_VERSION}/schools`;
+const url = `${process.env.REACT_APP_SERVER_URL}/api/${process.env.REACT_APP_API_VERSION}/exams`;
 const userToken = localStorage.getItem("quesers-admin");
 
 const initialState = {
-    resourceTypes: [],
-    resourceType: null,
+    exams: [],
+    exam: null,
 };
 
 export const create = createAsyncThunk(
-    "resourceType/create",
+    "exam/create",
     async (data, thunkAPI) => {
         try {
             const response = await axios.post(`${url}/create`, data, {
@@ -31,7 +31,7 @@ export const create = createAsyncThunk(
 );
 
 export const update = createAsyncThunk(
-    "resourceType/update",
+    "exam/update",
     async (data, thunkAPI) => {
         try {
             const response = await axios.put(
@@ -56,8 +56,8 @@ export const update = createAsyncThunk(
 );
 
 
-export const allResourceTypes = createAsyncThunk(
-    "resourceType/allResourceTypes",
+export const allExams = createAsyncThunk(
+    "exam/allExams",
     async (thunkAPI) => {
         try {
             const response = await axios.get(`${url}/`, {
@@ -77,8 +77,8 @@ export const allResourceTypes = createAsyncThunk(
 );
 
 
-export const deleteResourceType = createAsyncThunk(
-    "resourceType/deleteResourceType",
+export const deleteExam = createAsyncThunk(
+    "exam/deleteExam",
     async (data, thunkAPI) => {
         try {
             const response = await axios.delete(`${url}/delete/${data._id}`, {
@@ -97,33 +97,33 @@ export const deleteResourceType = createAsyncThunk(
     }
 );
 
-export const resourceSlice = createSlice({
-    name: "resourceType",
+export const examSlice = createSlice({
+    name: "exam",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(create.fulfilled, (state, action) => {
-                state.resourceTypes.unshift(action.payload.resourceType);
+                state.exams.unshift(action.payload.exam);
             })
-            .addCase(allResourceTypes.fulfilled, (state, action) => {
-                state.resourceTypes = action.payload;
+            .addCase(allExams.fulfilled, (state, action) => {
+                state.exams = action.payload;
             })
             .addCase(update.fulfilled, (state, action) => {
                 const id = action.payload.response._id
                 const title = action.payload.response.title
                 const slug = action.payload.response.slug
-                let currentState = current(state).resourceTypes
+                let currentState = current(state).exams
                 let newArray = currentState.map(item => {
                     if (item._id === id) {
                         return { ...item, title, slug }
                     }
                     return item
                 })
-                state.resourceTypes = newArray
+                state.exams = newArray
             })
     },
 });
 
-// export const {} = resourceSlice.actions;
-export default resourceSlice.reducer;
+// export const {} = examSlice.actions;
+export default examSlice.reducer;

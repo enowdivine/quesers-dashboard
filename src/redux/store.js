@@ -4,9 +4,11 @@ import Resources from "./reducers/resources";
 import Withdrawals from "./reducers/withdrawals";
 import Vendors from "./reducers/vendors";
 // 
+import exams from "./reducers/exams";
 import resourceType from "./reducers/resourceType"
 import faculties from "./reducers/faculties";
 import departments from "./reducers/departments";
+import categories from "./reducers/categories";
 
 const store = configureStore({
   reducer: {
@@ -16,7 +18,9 @@ const store = configureStore({
     vendors: Vendors,
     resourceType,
     faculties,
-    departments
+    departments,
+    exams,
+    categories
   },
 });
 

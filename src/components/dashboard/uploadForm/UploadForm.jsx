@@ -1,17 +1,19 @@
 import React, { useState, useContext, useEffect } from "react";
+import styles from "./styles.module.css";
 import { GrDocumentText } from "react-icons/gr";
 import { FaPlus } from "react-icons/fa";
 import { useDropzone } from "react-dropzone";
 import { useDispatch, useSelector } from "react-redux";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import {
   uploadDoc,
   updateDoc,
   updateDocStatus,
-} from "../../helpers/redux/resources";
-import { getAllResourceTypes } from "../../helpers/redux/resourseTypes";
-import { getAllFaculties } from "../../helpers/redux/faculties";
-import { getAllDepartments } from "../../helpers/redux/departments";
+} from "../../../helpers/redux/resources";
+import { getAllResourceTypes } from "../../../helpers/redux/resourseTypes";
+import { getAllFaculties } from "../../../helpers/redux/faculties";
+import { getAllDepartments } from "../../../helpers/redux/departments";
+import { getAllCategories } from "../../../helpers/redux/categories";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -33,6 +35,9 @@ const UploadForm = () => {
   const [rejectedLoading, setRejectedLoading] = useState(false);
   const [singleDoc, setSingleDoc] = useState(null);
   const allDocs = useSelector((state) => state.resource.resources);
+  console.log(allDocs);
+  const categoriesStates = useSelector((state) => state.categories.categories);
+  const examStates = useSelector((state) => state.exams.exams);
   const resourceTypeState = useSelector(
     (state) => state.resourceType.resourceTypes
   );
@@ -41,6 +46,9 @@ const UploadForm = () => {
     (state) => state.departments.departments
   );
 
+  const [examType, setExamType] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [exams, setExams] = useState([]);
   const [rsType, setRsType] = useState([]);
   const [faculties, setFaculties] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -67,6 +75,8 @@ const UploadForm = () => {
   const [description, setDescription] = useState("");
   const [language, setLanguage] = useState("");
   const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [exam, setExam] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -144,6 +154,7 @@ const UploadForm = () => {
     });
 
   const getRequiredData = async () => {
+    await getAllCategories(dispatch, setLoading);
     await getAllResourceTypes(dispatch, setLoading);
     await getAllFaculties(dispatch, setLoading);
     await getAllDepartments(dispatch, setLoading);
@@ -157,17 +168,13 @@ const UploadForm = () => {
       screenshotsTwo &&
       screenshotsThree &&
       screenshotsFour &&
-      resourceType &&
-      faculty &&
-      department &&
-      level &&
-      semester &&
       title &&
       features &&
       description &&
       language &&
       price &&
-      userId
+      userId &&
+      category
     ) {
       const data = new FormData();
       data.append("resourceDoc", uploadedDoc);
@@ -175,7 +182,7 @@ const UploadForm = () => {
       data.append("screenshotTwo", screenshotsTwo);
       data.append("screenshotThree", screenshotsThree);
       data.append("screenshotFour", screenshotsFour);
-      data.append("resourceType", resourceType);
+      data.append("school", resourceType);
       data.append("faculty", faculty);
       data.append("department", department);
       data.append("level", level);
@@ -186,6 +193,8 @@ const UploadForm = () => {
       data.append("language", language);
       data.append("price", price);
       data.append("vendorId", userId);
+      data.append("category", category);
+      data.append("exam", exam);
 
       const response = await uploadDoc(data, dispatch, setLoading);
       if (response.status === "error") {
@@ -210,7 +219,7 @@ const UploadForm = () => {
     data.append("screenshotTwo", screenshotsTwo);
     data.append("screenshotThree", screenshotsThree);
     data.append("screenshotFour", screenshotsFour);
-    data.append("resourceType", resourceType);
+    data.append("school", resourceType);
     data.append("faculty", faculty);
     data.append("department", department);
     data.append("level", level);
@@ -221,6 +230,8 @@ const UploadForm = () => {
     data.append("language", language);
     data.append("price", price);
     data.append("vendorId", userId);
+    data.append("category", category);
+    data.append("exam", exam);
 
     const response = await updateDoc(data, dispatch, setLoading);
     if (response.status === "error") {
@@ -273,6 +284,14 @@ const UploadForm = () => {
   useEffect(() => {
     getRequiredData();
   }, []);
+
+  useEffect(() => {
+    setCategories(categoriesStates);
+  }, [categoriesStates]);
+
+  useEffect(() => {
+    setExams(examStates);
+  }, [examStates]);
 
   useEffect(() => {
     setRsType(resourceTypeState);
@@ -526,75 +545,138 @@ const UploadForm = () => {
             Please Fill the following Information
           </h4>
           <div>
+            <label className={styles.labels}>Select Exam Type *</label>
             <select
               className="uploadFormInput"
-              value={resourceType}
-              onChange={(e) => setResourceType(e.target.value)}
+              value={examType}
+              onChange={(e) => setExamType(e.target.value)}
             >
-              <option>Exam/School</option>
-              {rsType.length > 0 ? (
-                rsType.map((item) => (
+              <option>Select Exam Type</option>
+              <option value="concour">Concour/High School Exam</option>
+              <option value="university">University Exam</option>
+            </select>
+            <label className={styles.labels}>Select Category *</label>
+            <select
+              className="uploadFormInput"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option>Select Category</option>
+              {categories.length > 0 ? (
+                categories.map((item) => (
                   <option key={item._id} value={item._id}>
                     {item.title}
                   </option>
                 ))
               ) : (
-                <option>Loading Exams/schools ...</option>
+                <option>Loading Categories ...</option>
               )}
             </select>
-            <select
-              className="uploadFormInput"
-              value={faculty}
-              onChange={(e) => setFaculty(e.target.value)}
-            >
-              <option>Faculty</option>
-              {faculties.length > 0 ? (
-                faculties.map((item) => (
-                  <option key={item._id} value={item._id}>
-                    {item.title}
-                  </option>
-                ))
-              ) : (
-                <option>Loading Faculties ...</option>
-              )}
-            </select>
-            <select
-              className="uploadFormInput"
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
-            >
-              <option>Department</option>
-              {departments.length > 0 ? (
-                departments.map((item) => (
-                  <option key={item._id} value={item._id}>
-                    {item.title}
-                  </option>
-                ))
-              ) : (
-                <option>Loading Exams/schools ...</option>
-              )}
-            </select>
-            <select
-              className="uploadFormInput"
-              value={level}
-              onChange={(e) => setLevel(e.target.value)}
-            >
-              <option>Level</option>
-              <option value={200}>200</option>
-              <option value={300}>300</option>
-              <option value={400}>400</option>
-              <option value={500}>500</option>
-              <option value={600}>600</option>
-            </select>
-            <select
-              className="uploadFormInput"
-              value={semester}
-              onChange={(e) => setSemester(e.target.value)}
-            >
-              <option>Semester</option>
-              <option value={"first"}>First Semester</option>
-              <option value={"second"}>Second Semester</option>
-            </select>
+            {examType === "concour" && (
+              <div>
+                <label className={styles.labels}>Select Exam *</label>
+                <select
+                  className="uploadFormInput"
+                  value={resourceType}
+                  onChange={(e) => setExam(e.target.value)}
+                >
+                  <option>Select Exam</option>
+                  {exams.length > 0 ? (
+                    exams.map((item) => (
+                      <option key={item._id} value={item._id}>
+                        {item.title}
+                      </option>
+                    ))
+                  ) : (
+                    <option>Loading Exams ...</option>
+                  )}
+                </select>
+              </div>
+            )}
+            {examType === "university" && (
+              <>
+                <label className={styles.labels}>Select School *</label>
+                <select
+                  className="uploadFormInput"
+                  value={resourceType}
+                  onChange={(e) => setResourceType(e.target.value)}
+                >
+                  <option>Select School</option>
+                  {rsType.length > 0 ? (
+                    rsType.map((item) => (
+                      <option key={item._id} value={item._id}>
+                        {item.title}
+                      </option>
+                    ))
+                  ) : (
+                    <option>Loading Schools ...</option>
+                  )}
+                </select>
+
+                <label className={styles.labels}>Select Faculty *</label>
+                <select
+                  className="uploadFormInput"
+                  value={faculty}
+                  onChange={(e) => setFaculty(e.target.value)}
+                >
+                  <option>Faculty</option>
+                  {faculties.length > 0 ? (
+                    faculties.map((item) => (
+                      <option key={item._id} value={item._id}>
+                        {item.title}
+                      </option>
+                    ))
+                  ) : (
+                    <option>Loading Faculties ...</option>
+                  )}
+                </select>
+
+                <label className={styles.labels}>Select Department *</label>
+                <select
+                  className="uploadFormInput"
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                >
+                  <option>Department</option>
+                  {departments.length > 0 ? (
+                    departments.map((item) => (
+                      <option key={item._id} value={item._id}>
+                        {item.title}
+                      </option>
+                    ))
+                  ) : (
+                    <option>Loading Exams/schools ...</option>
+                  )}
+                </select>
+
+                <label className={styles.labels}>Select Level *</label>
+                <select
+                  className="uploadFormInput"
+                  value={level}
+                  onChange={(e) => setLevel(e.target.value)}
+                >
+                  <option>Level</option>
+                  <option value={200}>200</option>
+                  <option value={300}>300</option>
+                  <option value={400}>400</option>
+                  <option value={500}>500</option>
+                  <option value={600}>600</option>
+                </select>
+
+                <label className={styles.labels}>Select Semester *</label>
+                <select
+                  className="uploadFormInput"
+                  value={semester}
+                  onChange={(e) => setSemester(e.target.value)}
+                >
+                  <option>Semester</option>
+                  <option value={"first"}>First Semester</option>
+                  <option value={"second"}>Second Semester</option>
+                </select>
+              </>
+            )}
+
+            <label className={styles.labels}>Select Language *</label>
             <select
               className="uploadFormInput"
               value={language}
@@ -615,35 +697,47 @@ const UploadForm = () => {
             Paper Details
           </h4>
           <div>
-            <input
-              type="number"
-              placeholder="Enter Price"
-              className="uploadFormInput"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Enter Title"
-              className="uploadFormInput"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <textarea
-              className="uploadFormInput"
-              placeholder="Add Features"
-              rows="4"
-              cols="50"
-              value={features}
-              onChange={(e) => setFeatures(e.target.value)}
-            ></textarea>
-            <input
-              type="text"
-              placeholder="Short Description"
-              className="uploadFormInput"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
+            <label className={styles.labels}>Enter Price *</label>
+            <div>
+              <input
+                type="number"
+                placeholder="Enter Price"
+                className="uploadFormInput"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+            </div>
+            <label className={styles.labels}>Enter Title *</label>
+            <div>
+              <input
+                type="text"
+                placeholder="Enter Title"
+                className="uploadFormInput"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <label className={styles.labels}>Add Features *</label>
+            <div>
+              <textarea
+                className="uploadFormInput"
+                placeholder="Add Features"
+                rows="4"
+                cols="50"
+                value={features}
+                onChange={(e) => setFeatures(e.target.value)}
+              ></textarea>
+            </div>
+            <label className={styles.labels}>Enter Brief Description *</label>
+            <div>
+              <input
+                type="text"
+                placeholder="Short Description"
+                className="uploadFormInput"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
           </div>
           {role === "admin" && (
             <div>

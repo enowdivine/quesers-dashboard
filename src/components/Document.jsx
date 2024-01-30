@@ -8,7 +8,7 @@ const Document = ({ title, color }) => {
         style={{
           border: "1px solid black",
           borderRadius: 10,
-          minHeight: 80,
+          minHeight: 140,
           margin: "20px 10px 0px 10px",
           display: "flex",
           justifyContent: "center",
@@ -16,7 +16,7 @@ const Document = ({ title, color }) => {
           cursor: "pointer",
         }}
       >
-        <GrDocumentText size={40} color={color} />
+        <GrDocumentText size={60} color={color} />
       </div>
       <div style={{ fontSize: "15px", marginLeft: "10px" }}>{title}</div>
     </div>

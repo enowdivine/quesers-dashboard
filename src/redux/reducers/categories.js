@@ -1,16 +1,16 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const url = `${process.env.REACT_APP_SERVER_URL}/api/${process.env.REACT_APP_API_VERSION}/schools`;
+const url = `${process.env.REACT_APP_SERVER_URL}/api/${process.env.REACT_APP_API_VERSION}/categories`;
 const userToken = localStorage.getItem("quesers-admin");
 
 const initialState = {
-    resourceTypes: [],
-    resourceType: null,
+    categories: [],
+    category: null,
 };
 
 export const create = createAsyncThunk(
-    "resourceType/create",
+    "category/create",
     async (data, thunkAPI) => {
         try {
             const response = await axios.post(`${url}/create`, data, {
@@ -31,7 +31,7 @@ export const create = createAsyncThunk(
 );
 
 export const update = createAsyncThunk(
-    "resourceType/update",
+    "category/update",
     async (data, thunkAPI) => {
         try {
             const response = await axios.put(
@@ -56,8 +56,8 @@ export const update = createAsyncThunk(
 );
 
 
-export const allResourceTypes = createAsyncThunk(
-    "resourceType/allResourceTypes",
+export const allCategoriees = createAsyncThunk(
+    "category/allCategoriees",
     async (thunkAPI) => {
         try {
             const response = await axios.get(`${url}/`, {
@@ -77,8 +77,8 @@ export const allResourceTypes = createAsyncThunk(
 );
 
 
-export const deleteResourceType = createAsyncThunk(
-    "resourceType/deleteResourceType",
+export const deleteCategory = createAsyncThunk(
+    "category/deleteCategory",
     async (data, thunkAPI) => {
         try {
             const response = await axios.delete(`${url}/delete/${data._id}`, {
@@ -97,33 +97,33 @@ export const deleteResourceType = createAsyncThunk(
     }
 );
 
-export const resourceSlice = createSlice({
-    name: "resourceType",
+export const categorySlice = createSlice({
+    name: "category",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(create.fulfilled, (state, action) => {
-                state.resourceTypes.unshift(action.payload.resourceType);
+                state.categories.unshift(action.payload.category);
             })
-            .addCase(allResourceTypes.fulfilled, (state, action) => {
-                state.resourceTypes = action.payload;
+            .addCase(allCategoriees.fulfilled, (state, action) => {
+                state.categories = action.payload;
             })
             .addCase(update.fulfilled, (state, action) => {
                 const id = action.payload.response._id
                 const title = action.payload.response.title
                 const slug = action.payload.response.slug
-                let currentState = current(state).resourceTypes
+                let currentState = current(state).categories
                 let newArray = currentState.map(item => {
                     if (item._id === id) {
                         return { ...item, title, slug }
                     }
                     return item
                 })
-                state.resourceTypes = newArray
+                state.categories = newArray
             })
     },
 });
 
-// export const {} = resourceSlice.actions;
-export default resourceSlice.reducer;
+// export const {} = categorySlice.actions;
+export default categorySlice.reducer;
