@@ -14,6 +14,7 @@ import { getAllResourceTypes } from "../../../helpers/redux/resourseTypes";
 import { getAllFaculties } from "../../../helpers/redux/faculties";
 import { getAllDepartments } from "../../../helpers/redux/departments";
 import { getAllCategories } from "../../../helpers/redux/categories";
+import { getAllExams } from "../../../helpers/redux/exams";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -35,7 +36,7 @@ const UploadForm = () => {
   const [rejectedLoading, setRejectedLoading] = useState(false);
   const [singleDoc, setSingleDoc] = useState(null);
   const allDocs = useSelector((state) => state.resource.resources);
-  console.log(allDocs);
+
   const categoriesStates = useSelector((state) => state.categories.categories);
   const examStates = useSelector((state) => state.exams.exams);
   const resourceTypeState = useSelector(
@@ -158,6 +159,7 @@ const UploadForm = () => {
     await getAllResourceTypes(dispatch, setLoading);
     await getAllFaculties(dispatch, setLoading);
     await getAllDepartments(dispatch, setLoading);
+    await getAllExams(dispatch, setLoading);
   };
 
   const handleUpload = async (e) => {
@@ -577,7 +579,7 @@ const UploadForm = () => {
                 <label className={styles.labels}>Select Exam *</label>
                 <select
                   className="uploadFormInput"
-                  value={resourceType}
+                  value={exam}
                   onChange={(e) => setExam(e.target.value)}
                 >
                   <option>Select Exam</option>
