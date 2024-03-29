@@ -51,8 +51,6 @@ const ListCategories = () => {
     setRsType(categoriesStates);
   }, [categoriesStates]);
 
-  console.log(rsType);
-
   return (
     <Layout>
       <div className={styles.headingTitle}>
