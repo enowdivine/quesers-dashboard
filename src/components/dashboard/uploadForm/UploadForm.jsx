@@ -647,7 +647,7 @@ const UploadForm = () => {
                       </option>
                     ))
                   ) : (
-                    <option>Loading Exams/schools ...</option>
+                    <option>Loading Departments ...</option>
                   )}
                 </select>
 

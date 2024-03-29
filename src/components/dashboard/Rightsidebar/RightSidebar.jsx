@@ -52,8 +52,8 @@ const navItems = [
     link: "/departments",
   },
   {
-    title: "Categories",
-    link: "/categories",
+    title: "Courses",
+    link: "/courses",
   },
   {
     title: "Vendors",
@@ -111,7 +111,6 @@ const RightSidebar = () => {
   const getUserInfo = async () => {
     const response = await getVendorDetails(userId, dispatch, setLoading);
     const user = response.message.payload;
-    // console.log(user);
     setImage(user?.avatar?.doc);
     setEmail(user?.email);
     setUsername(user?.username);

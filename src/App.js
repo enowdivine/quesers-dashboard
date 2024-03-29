@@ -34,7 +34,7 @@ function App() {
           <Route path="/schools" element={<ListSchools />} />
           <Route path="/faculties" element={<ListFaculties />} />
           <Route path="/departments" element={<ListDepartments />} />
-          <Route path="/categories" element={<ListCategories />} />
+          <Route path="/courses" element={<ListCategories />} />
 
           {/* 404 ROUTE */}
           <Route path="*" element={<PageError />} />

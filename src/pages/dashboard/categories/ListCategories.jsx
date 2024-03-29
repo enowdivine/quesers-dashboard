@@ -51,10 +51,12 @@ const ListCategories = () => {
     setRsType(categoriesStates);
   }, [categoriesStates]);
 
+  console.log(rsType);
+
   return (
     <Layout>
       <div className={styles.headingTitle}>
-        <h5>List Of Categories</h5>
+        <h5>List Of Courses</h5>
         <ModalComponent
           action="categories"
           item={editItem}
