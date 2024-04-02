@@ -29,6 +29,7 @@ function ModalComponent({ action, item, editShow, editClose }) {
   const [schools, setSchools] = useState([]);
   const [faculties, setFaculties] = useState([]);
   const [departments, setDepartments] = useState([]);
+
   const [selectedExam, setSelectedExam] = useState("");
   const [selectedSchool, setSelectedSchool] = useState("");
   const [selectedFaculty, setSelectedFaculty] = useState("");
@@ -65,6 +66,13 @@ function ModalComponent({ action, item, editShow, editClose }) {
   const setEditItem = async () => {
     if (editShow) {
       setTitle(item.title);
+      setSelectedExam(item?.examId);
+      setSelectedSchool(item?.schoolId);
+      setSelectedFaculty(item?.facultyId);
+      setSelectedDepartment(item?.departmentId);
+      setLevel(item?.level);
+      setSemester(item?.semester);
+      setCourseType(item?.examId || item?.schoolId);
     }
   };
 
@@ -266,6 +274,7 @@ function ModalComponent({ action, item, editShow, editClose }) {
                       )}
                     </select>
                     <select
+                      value={selectedFaculty}
                       className={styles.selectField}
                       onChange={(e) => setSelectedFaculty(e.target.value)}
                     >
