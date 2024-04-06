@@ -7,6 +7,7 @@ const userToken = localStorage.getItem("quesers-admin");
 const initialState = {
   resources: [],
   resource: null,
+  saleCounts: null
 };
 
 export const create = createAsyncThunk(
@@ -101,11 +102,51 @@ export const allResources = createAsyncThunk(
   }
 );
 
+export const allSalesCount = createAsyncThunk(
+  "resource/allSalesCount",
+  async (thunkAPI) => {
+    try {
+      const response = await axios.get(`${url}/sales-count`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      const message =
+        (error.message && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const vendorResources = createAsyncThunk(
   "resource/vendorResources",
   async (vendorId, thunkAPI) => {
     try {
       const response = await axios.get(`${url}/vendor-resources/${vendorId}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      const message =
+        (error.message && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const vendorSalesCount = createAsyncThunk(
+  "resource/vendorSalesCount",
+  async (vendorId, thunkAPI) => {
+    try {
+      const response = await axios.get(`${url}/vendor-sales-count/${vendorId}`, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
@@ -155,6 +196,12 @@ export const resourceSlice = createSlice({
       })
       .addCase(allResources.fulfilled, (state, action) => {
         state.resources = action.payload;
+      })
+      .addCase(allSalesCount.fulfilled, (state, action) => {
+        state.saleCounts = action.payload;
+      })
+      .addCase(vendorSalesCount.fulfilled, (state, action) => {
+        state.saleCounts = action.payload;
       })
       .addCase(singleResource.fulfilled, (state, action) => {
         state.resource = action.payload;

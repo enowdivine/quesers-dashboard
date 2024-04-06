@@ -94,7 +94,7 @@ const CashoutRequest = () => {
                   <td>{vendor?.username}</td>
                   <td>{vendor?.phone}</td>
                   <td>{vendor?.email}</td>
-                  <td>{formatMoney(item?.amount)} XAF</td>
+                  <td>XAF {formatMoney(item?.amount)}</td>
                   <td
                     style={
                       item.status === "pending"

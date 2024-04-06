@@ -3,53 +3,78 @@ import Cards from "../Cards";
 import Document from "../Document";
 import { AuthContext } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
-import { getVendorDocs, getAllDocs } from "../../helpers/redux/resources";
+import {
+  getVendorDocs,
+  getAllDocs,
+  getAllSalesCount,
+  getVendorSalesCount,
+} from "../../helpers/redux/resources";
+import { getVendorDetails } from "../../helpers/redux/vendors";
 import { useDispatch, useSelector } from "react-redux";
-
-const stats = [
-  {
-    title: "Downloads",
-    value: 7265,
-    desc: "",
-  },
-  {
-    title: "Gains",
-    value: 3671,
-    desc: "CFA",
-  },
-  {
-    title: "Uploads",
-    value: 15,
-    desc: "Papers",
-  },
-  {
-    title: "Reviews",
-    value: 2318,
-    desc: "4.5 Stars",
-  },
-];
 
 const MainContent = () => {
   const { role, userId } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [docs, setDocs] = useState([]);
+  const [selected, setSelected] = useState("");
+  const [revenue, setRevenue] = useState("");
   const allDocs = useSelector((state) => state.resource.resources);
+  const saleCounts = useSelector((state) => state.resource.saleCounts);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     const getAllDocuments = async () => {
-      role === "admin"
-        ? await getAllDocs(dispatch, setLoading)
-        : await getVendorDocs(userId, dispatch, setLoading);
+      if (role === "admin") {
+        await getAllDocs(dispatch, setLoading);
+        await getAllSalesCount(dispatch, setLoading);
+      } else {
+        await getVendorDocs(userId, dispatch, setLoading);
+        await getVendorSalesCount(userId, dispatch, setLoading);
+        const response = await getVendorDetails(userId, dispatch, setLoading);
+        const user = response.message.payload;
+        setRevenue(user?.totalRevenue);
+      }
     };
 
     getAllDocuments();
   }, [userId, dispatch]);
 
+  const filterDoc = () => {
+    const result = allDocs.filter((item) => item.status === selected);
+    setDocs(result);
+  };
+
+  useEffect(() => {
+    filterDoc();
+  }, [selected]);
+
   useEffect(() => {
     setDocs(allDocs);
   }, [allDocs]);
+
+  const stats = [
+    {
+      title: "Sales",
+      value: saleCounts?.totalSaleCount,
+      desc: "",
+    },
+    {
+      title: "Gains",
+      value: role === "admin" ? saleCounts?.totalRevenue : revenue,
+      desc: "FCFA",
+    },
+    {
+      title: "Uploads",
+      value: allDocs?.length,
+      desc: "Papers",
+    },
+    {
+      title: "Reviews",
+      value: 2318,
+      desc: "4.5 Stars",
+    },
+  ];
 
   return (
     <div className="vendorMainContent">
@@ -82,11 +107,12 @@ const MainContent = () => {
           {role === "admin" ? (
             <select
               style={{ outline: "none", padding: "5px 10px", borderRadius: 5 }}
+              onChange={(e) => setSelected(e.target.value)}
             >
               <option>Filter</option>
-              <option>Pending</option>
-              <option>Approved</option>
-              <option>Rejected</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
             </select>
           ) : (
             "Uploads"
@@ -106,7 +132,7 @@ const MainContent = () => {
         ) : (
           docs.length > 0 &&
           docs.map((item, index) => (
-            <Link to={`/doc-details/${item._id}`} key={index}>
+            <Link to={`/doc-details/${item._id}/${item.vendorId}`} key={index}>
               <Document
                 key={index}
                 title={item.title}

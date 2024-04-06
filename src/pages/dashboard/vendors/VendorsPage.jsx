@@ -49,6 +49,11 @@ const VendorPage = () => {
     setVendors(allStateVendors);
   }, [allStateVendors]);
 
+  const formatMoney = (amount) => {
+    let dollarUSLocale = Intl.NumberFormat("en-US");
+    return dollarUSLocale.format(amount);
+  };
+
   return (
     <Layout>
       <div className={styles.headingTitle}>
@@ -109,7 +114,7 @@ const VendorPage = () => {
                   >
                     {item?.status}
                   </td>
-                  <td>{item?.totalRevenue}</td>
+                  <td>XAF {formatMoney(item?.totalRevenue)}</td>
                   <td>{moment(item?.createdAt).format("DD-MM-YYYY HH:mm")}</td>
                   <td>
                     <button

@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import Cards from "../../Cards";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import { userLogout } from "../../../helpers/redux/auth";
 import {
@@ -69,11 +69,22 @@ const RightSidebar = () => {
   const [amount, setAmount] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [revenue, setRevenue] = useState("");
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState({ title: "Home" });
   const { setAuthenticated, role, userId, email, setEmail, image, setImage } =
     useContext(AuthContext);
+
   const dispatch = useDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const selectedItem = [...navItems].find(
+      (item) => item.link === currentPath
+    );
+    setSelected(selectedItem);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     var result = window.confirm(`Are you sure you want to logout?`);
@@ -88,6 +99,10 @@ const RightSidebar = () => {
   const handleCashoutRequest = async (e) => {
     e.preventDefault();
     if ((amount, password)) {
+      if (amount > revenue) {
+        toast.error("Insufficient Funds");
+        return;
+      }
       const data = {
         userId,
         amount,
@@ -111,6 +126,7 @@ const RightSidebar = () => {
   const getUserInfo = async () => {
     const response = await getVendorDetails(userId, dispatch, setLoading);
     const user = response.message.payload;
+    setRevenue(user?.totalRevenue);
     setImage(user?.avatar?.doc);
     setEmail(user?.email);
     setUsername(user?.username);
@@ -153,9 +169,12 @@ const RightSidebar = () => {
     });
 
   useEffect(() => {
-    if (role === "vendor") {
-      getUserInfo();
-    }
+    const getRequiredData = async () => {
+      if (role === "vendor") {
+        getUserInfo();
+      }
+    };
+    getRequiredData();
   }, [userId]);
 
   return (
@@ -177,7 +196,7 @@ const RightSidebar = () => {
               style={{
                 cursor: "pointer",
                 borderRadius: "50%",
-                width: 200,
+                width: 150,
                 padding: 6,
                 background:
                   "linear-gradient(45deg, rgba(73,152,153,1) 0%, rgba(192,253,45,1) 100%)",
@@ -193,8 +212,8 @@ const RightSidebar = () => {
             <div style={{ marginTop: 10 }}>
               <Cards
                 title={"Gains"}
-                value={3671}
-                desc={"CFA"}
+                value={revenue}
+                desc={"FCFA"}
                 color={"#dcecf2"}
               />
             </div>
@@ -240,7 +259,11 @@ const RightSidebar = () => {
                 key={index}
                 onClick={() => setSelected(item)}
                 to={item.link}
-                className="rightsidebarNavItems"
+                className={
+                  selected && selected.title === item.title
+                    ? "leftsidebarNavItems selectedNavItem"
+                    : "leftsidebarNavItems"
+                }
               >
                 {item.title}
               </Link>

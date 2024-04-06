@@ -5,6 +5,8 @@ import {
   vendorResources,
   singleResource,
   allResources,
+  allSalesCount,
+  vendorSalesCount
 } from "../../redux/reducers/resources";
 
 export const uploadDoc = async (data, dispatch, setLoading) => {
@@ -79,10 +81,46 @@ export const getAllDocs = async (dispatch, setLoading) => {
   }
 };
 
+export const getAllSalesCount = async (dispatch, setLoading) => {
+  setLoading(true);
+  try {
+    const response = await dispatch(allSalesCount()).then((res) => {
+      if (res.meta.requestStatus === "rejected") {
+        return { status: "error", message: "response error", res };
+      } else {
+        return { status: "success", message: res };
+      }
+    });
+    setLoading(false);
+    return response;
+  } catch (error) {
+    setLoading(false);
+    return { status: "error", message: "catch error", error };
+  }
+};
+
 export const getVendorDocs = async (data, dispatch, setLoading) => {
   setLoading(true);
   try {
     const response = await dispatch(vendorResources(data)).then((res) => {
+      if (res.meta.requestStatus === "rejected") {
+        return { status: "error", message: "response error", res };
+      } else {
+        return { status: "success", message: res };
+      }
+    });
+    setLoading(false);
+    return response;
+  } catch (error) {
+    setLoading(false);
+    return { status: "error", message: "catch error", error };
+  }
+};
+
+export const getVendorSalesCount = async (data, dispatch, setLoading) => {
+  setLoading(true);
+  try {
+    const response = await dispatch(vendorSalesCount(data)).then((res) => {
       if (res.meta.requestStatus === "rejected") {
         return { status: "error", message: "response error", res };
       } else {

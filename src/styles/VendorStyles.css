@@ -4,6 +4,8 @@
   justify-items: center;
   align-items: center;
   margin-bottom: 5px;
+  text-decoration: none;
+  color: #398b18;
 }
 
 .brand img {
@@ -24,6 +26,8 @@
 .leftsidebarNav {
   display: block;
   padding: 0;
+  max-height: 83vh;
+  overflow: scroll;
 }
 
 .leftsidebarNavItems {

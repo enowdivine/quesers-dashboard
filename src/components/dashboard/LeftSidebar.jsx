@@ -1,9 +1,9 @@
-import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { GrDocumentText } from "react-icons/gr";
 import { userLogout } from "../../helpers/redux/auth";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const navItems = [
   {
@@ -38,8 +38,20 @@ const docsItems = [
 const LeftSidebar = () => {
   const [selected, setSelected] = useState({ title: "Home" });
   const { setAuthenticated, role } = useContext(AuthContext);
+  const { vendor } = useParams();
+  const [vendorDocs, setVendorDocs] = useState([]);
+  const allDocs = useSelector((state) => state.resource.resources);
 
   const dispatch = useDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const selectedItem = [...navItems, ...docsItems].find(
+      (item) => item.link === currentPath
+    );
+    setSelected(selectedItem);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     var result = window.confirm(`Are you sure you want to logout?`);
@@ -51,19 +63,26 @@ const LeftSidebar = () => {
     }
   };
 
+  useEffect(() => {
+    const filterDocs = () => {
+      const result = allDocs.filter((item) => item.vendorId === vendor);
+      setVendorDocs(result);
+    };
+    filterDocs();
+  }, [vendor]);
+
   return (
     <div>
-      <div className="brand">
+      <Link to={"/"} className="brand">
         <img src="/assets/images/logo.png" alt="OutShine Logo" />
         <p>OutShine</p>
-      </div>
-      <h4 className="leftsidebarNavTitle">Actions</h4>
+      </Link>
+      <h4 className="leftsidebarNavTitle">Documents</h4>
       {role === "vendor" && (
         <ul>
           {navItems.map((item, index) => (
             <Link
               key={index}
-              onClick={() => setSelected(item)}
               className={
                 selected && selected.title === item.title
                   ? "leftsidebarNavItems selectedNavItem"
@@ -84,23 +103,26 @@ const LeftSidebar = () => {
       )}
       {role === "admin" && (
         <ul className="leftsidebarNav">
-          {docsItems.map((item, index) => (
-            <Link
-              key={index}
-              onClick={() => setSelected(item)}
-              className={
-                selected && selected.title === item.title
-                  ? "leftsidebarNavItems selectedNavItem"
-                  : "leftsidebarNavItems"
-              }
-              to={item.link}
-            >
-              <span style={{ display: "flex" }}>
-                <GrDocumentText size={25} color={"green"} className="mr-1" />
-                {item.title}
-              </span>
-            </Link>
-          ))}
+          {vendorDocs.length > 0 ? (
+            vendorDocs.map((item, index) => (
+              <Link
+                key={index}
+                className={
+                  selected && selected.title === item.title
+                    ? "leftsidebarNavItems selectedNavItem"
+                    : "leftsidebarNavItems"
+                }
+                to={`/doc-details/${item._id}/${item.vendorId}`}
+              >
+                <span style={{ display: "flex" }}>
+                  <GrDocumentText size={25} color={"green"} className="mr-1" />
+                  {item.title}
+                </span>
+              </Link>
+            ))
+          ) : (
+            <span style={{ color: "#ccc" }}>No Document Selected</span>
+          )}
         </ul>
       )}
     </div>

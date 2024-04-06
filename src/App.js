@@ -1,5 +1,7 @@
 import React from "react";
 import Login from "./pages/auth/Login";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import NewPassword from "./pages/auth/NewPassword";
 import Home from "./pages/dashboard/Home";
 import Upload from "./pages/dashboard/Upload";
 import ListExams from "./pages/dashboard/exams/ListExams";
@@ -25,10 +27,12 @@ function App() {
         <Routes>
           {/* UNPROTECTED ROUTES */}
           <Route path="/" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/new-password/:token" element={<NewPassword />} />
           <Route path="/dashboard" element={<Home />} />
           <Route path="/create" element={<Upload />} />
           <Route path="/requests" element={<CashoutRequest />} />
-          <Route path="/doc-details/:id" element={<DocDetails />} />
+          <Route path="/doc-details/:id/:vendor" element={<DocDetails />} />
           <Route path="/vendors" element={<VendorPage />} />
           <Route path="/exams" element={<ListExams />} />
           <Route path="/schools" element={<ListSchools />} />

@@ -17,6 +17,7 @@ import { getAllCategories } from "../../../helpers/redux/categories";
 import { getAllExams } from "../../../helpers/redux/exams";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
+import PDFViewer from "../../Modal/PDFViewer";
 
 const UploadBtnStyles = {
   fontWeight: "bold",
@@ -78,6 +79,7 @@ const UploadForm = () => {
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [exam, setExam] = useState("");
+  const [vendor, setVendor] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -313,7 +315,11 @@ const UploadForm = () => {
         const doc = allDocs.filter((doc) => doc._id === id)[0];
         if (doc !== undefined) {
           setSingleDoc(doc);
-          setResourceType(doc?.resourceType);
+          setVendor(doc?.vendor);
+          setExamType(doc?.school ? "university" : "concour");
+          setResourceType(doc?.school);
+          setCategory(doc?.category);
+          setExam(doc?.exam);
           setFaculty(doc?.faculty);
           setDepartment(doc?.department);
           setLevel(doc?.level);
@@ -337,6 +343,8 @@ const UploadForm = () => {
       getDocById();
     }
   }, [id, allDocs]);
+
+  console.log(singleDoc);
 
   return (
     <div
@@ -367,6 +375,9 @@ const UploadForm = () => {
           >
             <div>
               <div>
+                <h4 style={{ fontWeight: "bold", fontSize: 20, marginTop: 80 }}>
+                  {title}
+                </h4>
                 <div
                   {...getFileDoc()}
                   style={{
@@ -391,13 +402,21 @@ const UploadForm = () => {
                     >
                       <GrDocumentText size={80} color="#398b18" />
                       {docPreview && (
-                        <div style={{ minWidth: "100%", minHeight: "100%" }}>
+                        <div
+                          style={{
+                            minWidth: "100%",
+                            minHeight: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
                           <img
                             src={docPreview}
-                            alt={"preview"}
+                            alt={"PREVIEW"}
                             style={{
-                              minWidth: "100%",
-                              minHeight: "220px",
+                              // minWidth: "100%",
+                              // minHeight: "220px",
                               borderRadius: "10px",
                             }}
                           />
@@ -411,6 +430,44 @@ const UploadForm = () => {
                     )}
                   </div>
                 </div>
+                {docPreview && (
+                  <div>
+                    <PDFViewer docPreview={docPreview} />
+                  </div>
+                )}
+                {role === "admin" && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginTop: 10,
+                    }}
+                  >
+                    <img
+                      src={
+                        vendor?.avatar?.doc || "/assets/images/placeholder.jpeg"
+                      }
+                      alt="Profile"
+                      style={{
+                        cursor: "pointer",
+                        borderRadius: "50%",
+                        width: 50,
+                        padding: 2,
+                        background:
+                          "linear-gradient(45deg, rgba(73,152,153,1) 0%, rgba(192,253,45,1) 100%)",
+                      }}
+                    />
+                    <p
+                      style={{
+                        textAlign: "center",
+                        marginTop: 10,
+                        marginLeft: 10,
+                      }}
+                    >
+                      {vendor?.username}
+                    </p>
+                  </div>
+                )}
               </div>
               <div>
                 <h4
@@ -557,13 +614,13 @@ const UploadForm = () => {
               <option value="concour">Concour/High School Exam</option>
               <option value="university">University Exam</option>
             </select>
-            <label className={styles.labels}>Select Category *</label>
+            <label className={styles.labels}>Select Course *</label>
             <select
               className="uploadFormInput"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option>Select Category</option>
+              <option>Select Course</option>
               {categories.length > 0 ? (
                 categories.map((item) => (
                   <option key={item._id} value={item._id}>
