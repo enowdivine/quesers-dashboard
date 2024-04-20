@@ -69,11 +69,6 @@ const MainContent = () => {
       value: allDocs?.length,
       desc: "Papers",
     },
-    {
-      title: "Reviews",
-      value: 2318,
-      desc: "4.5 Stars",
-    },
   ];
 
   return (
@@ -97,7 +92,7 @@ const MainContent = () => {
             value={item.value}
             desc={item.desc}
             color={index % 2 === 1 ? "#dee3e3" : "#dcecf2"}
-            width={"25%"}
+            width={"33.3%"}
             margin={15}
           />
         ))}
