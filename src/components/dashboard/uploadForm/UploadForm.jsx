@@ -80,6 +80,7 @@ const UploadForm = () => {
   const [category, setCategory] = useState("");
   const [exam, setExam] = useState("");
   const [vendor, setVendor] = useState("");
+  const [numOfPages, setNumOfPages] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -94,6 +95,9 @@ const UploadForm = () => {
         setDocPreview(objectUrl);
         // free memory when ever this component is unmounted
         return () => URL.revokeObjectURL(objectUrl);
+      },
+      accept: {
+        "application/pdf": [],
       },
     }
   );
@@ -199,6 +203,7 @@ const UploadForm = () => {
       data.append("vendorId", userId);
       data.append("category", category);
       data.append("exam", exam);
+      data.append("numOfPages", numOfPages);
 
       const response = await uploadDoc(data, dispatch, setLoading);
       if (response.status === "error") {
@@ -236,6 +241,7 @@ const UploadForm = () => {
     data.append("vendorId", userId);
     data.append("category", category);
     data.append("exam", exam);
+    data.append("numOfPages", numOfPages);
 
     const response = await updateDoc(data, dispatch, setLoading);
     if (response.status === "error") {
@@ -432,7 +438,10 @@ const UploadForm = () => {
                 </div>
                 {docPreview && (
                   <div>
-                    <PDFViewer docPreview={docPreview} />
+                    <PDFViewer
+                      docPreview={docPreview}
+                      setNumOfPages={setNumOfPages}
+                    />
                   </div>
                 )}
                 {role === "admin" && (
