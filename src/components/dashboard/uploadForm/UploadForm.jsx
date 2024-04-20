@@ -18,6 +18,7 @@ import { getAllExams } from "../../../helpers/redux/exams";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import PDFViewer from "../../Modal/PDFViewer";
+import * as pdfjsLib from "pdfjs-dist/webpack";
 
 const UploadBtnStyles = {
   fontWeight: "bold",
@@ -80,11 +81,21 @@ const UploadForm = () => {
   const [category, setCategory] = useState("");
   const [exam, setExam] = useState("");
   const [vendor, setVendor] = useState("");
-  const [numOfPages, setNumOfPages] = useState("");
+  const [numOfPages, setNumOfPages] = useState(0);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const getPdfPageCount = (pdfFilePath) => {
+    return pdfjsLib
+      .getDocument(pdfFilePath)
+      .promise.then((pdf) => pdf.numPages)
+      .catch((error) => {
+        console.error("Error getting PDF page count:", error);
+        return 0; // Return 0 in case of an error
+      });
+  };
 
   const { getRootProps: getFileDoc, getInputProps: getFileInput } = useDropzone(
     {
@@ -93,6 +104,12 @@ const UploadForm = () => {
 
         const objectUrl = URL.createObjectURL(acceptedFiles[0]);
         setDocPreview(objectUrl);
+
+        getPdfPageCount(objectUrl).then((pageCount) => {
+          console.log("Number of pages:", pageCount);
+          setNumOfPages(pageCount);
+        });
+
         // free memory when ever this component is unmounted
         return () => URL.revokeObjectURL(objectUrl);
       },
@@ -350,8 +367,6 @@ const UploadForm = () => {
     }
   }, [id, allDocs]);
 
-  console.log(singleDoc);
-
   return (
     <div
       style={{
@@ -438,10 +453,7 @@ const UploadForm = () => {
                 </div>
                 {docPreview && (
                   <div>
-                    <PDFViewer
-                      docPreview={docPreview}
-                      setNumOfPages={setNumOfPages}
-                    />
+                    <PDFViewer docPreview={docPreview} />
                   </div>
                 )}
                 {role === "admin" && (

@@ -14,9 +14,8 @@ const PDFViewer = ({ docPreview }) => {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
 
-  const onDocumentLoadSuccess = ({ numPages, setNumOfPages }) => {
+  const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
-    setNumOfPages(numPages);
   };
 
   const goToPreviousPage = () => {
